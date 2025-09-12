@@ -18,6 +18,19 @@ export function renderHelix(ctx, { width, height, palette, NUM }) {
   ctx.fillRect(0, 0, width, height);
 
   // Draw layers back to front for depth without motion
+    1) Vesica field – intersecting circles grid
+    2) Tree-of-Life – ten sephirot with twenty-two paths
+    3) Fibonacci curve – static logarithmic spiral polyline
+    4) Double-helix lattice – two sine strands with crossbars
+
+  All geometry is static; no animation, network, or external deps.
+*/
+
+export function renderHelix(ctx, { width, height, palette, NUM }) {
+  // clear background with calm color
+  ctx.fillStyle = palette.bg;
+  ctx.fillRect(0, 0, width, height);
+
   drawVesica(ctx, width, height, palette.layers[0], NUM);
   drawTree(ctx, width, height, palette.layers[1], palette.layers[2], NUM);
   drawFibonacci(ctx, width, height, palette.layers[3], NUM);
@@ -25,7 +38,13 @@ export function renderHelix(ctx, { width, height, palette, NUM }) {
 }
 
 // L1 — Vesica field: intersecting circle grid
+// --- Layer 1: Vesica field ---
 function drawVesica(ctx, w, h, color, NUM) {
+  const cols = NUM.NINE; // gentle grid
+  const rows = NUM.SEVEN;
+  const stepX = w / cols;
+  const stepY = h / rows;
+  const r = Math.min(stepX, stepY) / 2;
   ctx.strokeStyle = color;
   ctx.lineWidth = 1;
   const r = Math.min(w, h) / NUM.THREE; // base radius from numerology
@@ -37,6 +56,13 @@ function drawVesica(ctx, w, h, color, NUM) {
       ctx.stroke();
       ctx.beginPath();
       ctx.arc(x + r, y, r, 0, Math.PI * 2);
+  for (let rIdx = 0; rIdx < rows; rIdx++) {
+    for (let c = 0; c < cols; c++) {
+      const cx = c * stepX + stepX / 2;
+      const cy = rIdx * stepY + stepY / 2;
+      circle(ctx, cx - r / 2, cy, r);
+      ctx.stroke();
+      circle(ctx, cx + r / 2, cy, r);
       ctx.stroke();
     }
   }
@@ -58,6 +84,21 @@ function drawTree(ctx, w, h, pathColor, nodeColor, NUM) {
     [cx + xo, ys * 6],
     [cx, ys * 7.5],
     [cx, ys * 9],
+// --- Layer 2: Tree-of-Life scaffold ---
+function drawTree(ctx, w, h, pathColor, nodeColor, NUM) {
+  const xo = w / 6;
+  const yo = h / 10;
+  const nodes = [
+    [w / 2, yo],
+    [w / 2 + xo, yo * 2],
+    [w / 2 - xo, yo * 2],
+    [w / 2 - xo * 1.5, yo * 4],
+    [w / 2 + xo * 1.5, yo * 4],
+    [w / 2, yo * 5],
+    [w / 2 - xo, yo * 6.5],
+    [w / 2 + xo, yo * 6.5],
+    [w / 2, yo * 8],
+    [w / 2, yo * 9]
   ];
   const paths = [
     [0,1],[0,2],[0,5],
@@ -93,12 +134,30 @@ function drawTree(ctx, w, h, pathColor, nodeColor, NUM) {
 function drawFibonacci(ctx, w, h, color, NUM) {
   ctx.strokeStyle = color;
   ctx.lineWidth = 2;
+  paths.forEach(([a,b]) => {
+    ctx.beginPath();
+    ctx.moveTo(...nodes[a]);
+    ctx.lineTo(...nodes[b]);
+    ctx.stroke();
+  });
+  ctx.fillStyle = nodeColor;
+  const r = NUM.NINE / 2;
+  nodes.forEach(([x,y]) => {
+    circle(ctx, x, y, r);
+    ctx.fill();
+  });
+}
+
+// --- Layer 3: Fibonacci curve ---
+function drawFibonacci(ctx, w, h, color, NUM) {
   const phi = (1 + Math.sqrt(5)) / 2;
   const turns = NUM.THREE; // three quarter-turns
   const steps = NUM.NINETYNINE;
   const scale = Math.min(w, h) / NUM.ELEVEN;
   const cx = w * 0.2;
   const cy = h * 0.8;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
   ctx.beginPath();
   for (let i = 0; i <= steps * turns; i++) {
     const theta = (i / steps) * turns * (Math.PI / 2);
@@ -117,6 +176,12 @@ function drawHelix(ctx, w, h, colorA, colorB, NUM) {
   const step = w / segments;
   const phase = Math.PI; // second strand offset
 
+// --- Layer 4: Double-helix lattice ---
+function drawHelix(ctx, w, h, colorA, colorB, NUM) {
+  const amplitude = h / NUM.NINE;
+  const segments = NUM.NINETYNINE;
+  const step = w / segments;
+  const phase = Math.PI;
   const strand = (offset, color) => {
     ctx.strokeStyle = color;
     ctx.beginPath();
@@ -137,9 +202,21 @@ function drawHelix(ctx, w, h, colorA, colorB, NUM) {
     const x = i * step;
     const y1 = h / 2 + amp * Math.sin((i / NUM.THREE) * Math.PI * 2);
     const y2 = h / 2 + amp * Math.sin((i / NUM.THREE) * Math.PI * 2 + phase);
+  strand(0, colorA);
+  strand(phase, colorB);
+  ctx.strokeStyle = colorB;
+  for (let i = 0; i <= segments; i += NUM.ELEVEN) {
+    const x = i * step;
+    const y1 = h/2 + amplitude * Math.sin((i / NUM.THREE) * Math.PI * 2);
+    const y2 = h/2 + amplitude * Math.sin((i / NUM.THREE) * Math.PI * 2 + phase);
     ctx.beginPath();
     ctx.moveTo(x, y1);
     ctx.lineTo(x, y2);
     ctx.stroke();
   }
+}
+
+function circle(ctx, x, y, r) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
 }
