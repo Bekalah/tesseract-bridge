@@ -29,6 +29,12 @@ Static offline HTML+Canvas sketch encoding a layered cosmology. ND-safe: no moti
 1. **Vesica field** – intersecting circles grid.
 2. **Tree-of-Life** – ten sephirot with twenty-two paths.
 3. **Fibonacci curve** – static logarithmic spiral.
+Static, ND-safe HTML+Canvas scene layering four forms of sacred geometry. Works fully offline.
+
+## Layers
+1. **Vesica field** – intersecting circles forming a calm grid.
+2. **Tree-of-Life scaffold** – ten nodes and twenty-two paths.
+3. **Fibonacci curve** – logarithmic spiral polyline.
 4. **Double-helix lattice** – two sine strands with crossbars.
 
 ## Usage
@@ -59,6 +65,11 @@ If `data/palette.json` is absent, a notice appears and a safe palette is used.
 
 ## Palette
 `palette.json` structure:
+2. Double-click `index.html` in any modern browser (no server or network).
+3. If `palette.json` is missing, a fallback palette is used and noted inline.
+
+## Palette
+`data/palette.json` contains colors:
 ```json
 {
   "bg": "#0b0b12",
@@ -78,3 +89,10 @@ Edit `data/palette.json` to customize colors or remove it to test the fallback.
 - Calm contrast and soft tones.
 - Layer order (Vesica -> Tree -> Fibonacci -> Helix) preserves depth without 3D.
 - Geometry uses numerology constants 3, 7, 9, 11, 22, 33, 99, and 144 for proportion.
+Edit values to customize hues.
+
+## ND-safe choices
+- No motion or autoplay; scene renders once.
+- Soft contrast with readable tones.
+- Geometry counts and proportions use numerology constants `3,7,9,11,22,33,99,144`.
+- Layer order preserves depth without flattening geometry.
