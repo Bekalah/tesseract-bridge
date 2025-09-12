@@ -1,6 +1,14 @@
 # Cosmic Helix Renderer
 
 
+Static HTML+Canvas experiment for layered sacred geometry. The renderer is
+non-moving, ND-safe, and works entirely offline.
+
+## Usage
+1. Double-click `index.html` in a desktop file manager.
+2. A 1440x900 canvas appears with four layers:
+=======
+
 Static, offline HTML + Canvas component that renders layered sacred geometry.
 
 ## Features
@@ -56,7 +64,7 @@ If `data/palette.json` is missing, a safe default palette is used and a notice a
 - Layers are drawn back-to-front for depth without 3D effects.
 
 All code uses plain ES modules, UTF-8, ASCII quotes, and can be inspected or extended without tooling.
-=======
+
 
 Static, offline HTML+Canvas demo encoding layered sacred geometry.
 
@@ -109,10 +117,22 @@ Static, offline-first Canvas renderer for layered sacred geometry.
 ## Usage
 1. Open `index.html` directly in a modern browser.
 2. A 1440x900 canvas will display:
+
    - Vesica field
    - Tree-of-Life scaffold
    - Fibonacci curve
    - Static double-helix lattice
+
+
+No network calls are made. If `data/palette.json` is missing the script falls
+back to a built-in palette and notes the absence in the page header.
+
+## Design Notes
+- Calm contrast and soft colors for readability.
+- Geometry and loop counts parameterized by numerology constants
+  (3, 7, 9, 11, 22, 33, 99, 144).
+- No animation or external dependencies to respect offline and sensory safety.
+=======
 3. No network requests or external libraries are used.
 
 ## Palette
@@ -122,7 +142,7 @@ Colors are stored in `data/palette.json`. If the file is missing, safe defaults 
 - No motion or autoplay
 - Calm contrast with high readability
 - Layer order mirrors symbolic depth
-=======
+
 
 Static HTML + Canvas renderer for layered sacred geometry. ND-safe and offline.
 
@@ -162,6 +182,7 @@ Colors are in `data/palette.json`. Delete or edit to customize. Missing files tr
 
 ## Why No Animation?
 Motion can be overstimulating. This renderer prefers stillness so attention can rest gently on layered depth.
+
 
 
 
