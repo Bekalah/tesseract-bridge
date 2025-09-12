@@ -1,13 +1,12 @@
 # Cosmic Helix Renderer
 
-
 Static HTML+Canvas experiment for layered sacred geometry. The renderer is
 non-moving, ND-safe, and works entirely offline.
 
 ## Usage
 1. Double-click `index.html` in a desktop file manager.
 2. A 1440x900 canvas appears with four layers:
-=======
+
 
 Static, offline HTML + Canvas component that renders layered sacred geometry.
 
@@ -38,7 +37,7 @@ Customize colors by editing `data/palette.json`:
 - Calm contrast and soft tones.
 - Layer order mirrors body (Vesica), mind (Tree), soul (Fibonacci), spirit (Helix).
 - Geometry constants include 3, 7, 9, 11, 22, 33, 99, and 144.
-=======
+
 
 Static HTML+Canvas sketch encoding a layered cosmology. Works fully offline with no dependencies.
 
@@ -118,6 +117,7 @@ Static, offline-first Canvas renderer for layered sacred geometry.
 1. Open `index.html` directly in a modern browser.
 2. A 1440x900 canvas will display:
 
+
    - Vesica field
    - Tree-of-Life scaffold
    - Fibonacci curve
@@ -132,7 +132,7 @@ back to a built-in palette and notes the absence in the page header.
 - Geometry and loop counts parameterized by numerology constants
   (3, 7, 9, 11, 22, 33, 99, 144).
 - No animation or external dependencies to respect offline and sensory safety.
-=======
+
 3. No network requests or external libraries are used.
 
 ## Palette

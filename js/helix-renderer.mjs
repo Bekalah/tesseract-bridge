@@ -89,8 +89,6 @@ function drawFibonacci(ctx, w, h, color, NUM) {
     b = next;
 
 
-
-
   Layers order (back to front):
     1) Vesica field (intersecting circles grid)
     2) Tree-of-Life scaffold (10 sephirot + 22 paths)
@@ -693,6 +691,7 @@ function drawFibonacci(ctx, w, h, color, NUM) {
 
 
 
+
   }
   ctx.stroke();
 }
@@ -726,6 +725,16 @@ function drawHelix(ctx, w, h, color, NUM) {
     ctx.beginPath();
     ctx.moveTo(x, mid - amp);
     ctx.lineTo(x, mid + amp);
+
+    ctx.stroke();
+  }
+}
+
+export function renderHelix(ctx, opts) {
+  const { width, height, palette, NUM } = opts;
+  ctx.fillStyle = palette.bg;
+  ctx.fillRect(0, 0, width, height);
+=======
 
 
 function drawHelixLattice(ctx, w, h, color, NUM) {
@@ -939,11 +948,13 @@ export function renderHelix(ctx, opts) {
   ctx.fillStyle = palette.bg;
   ctx.fillRect(0, 0, width, height);
 
+  
   drawVesica(ctx, width, height, palette.layers[0], NUM);
   drawTree(ctx, width, height, palette.layers[1], NUM);
   drawFibonacci(ctx, width, height, palette.layers[2], NUM);
   drawHelix(ctx, width, height, palette.layers[3], NUM);
 }
+
 
   // Layer order: Vesica -> Tree -> Fibonacci -> Helix
   drawVesica(ctx, width, height, palette.layers[0], NUM);
@@ -1018,6 +1029,7 @@ function drawHelix(ctx, w, h, colorA, colorB, NUM) {
     ctx.stroke();
   }
 }
+
 
 
 
