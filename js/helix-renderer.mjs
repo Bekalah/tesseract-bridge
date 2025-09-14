@@ -46,6 +46,16 @@ export function renderHelix(ctx, { width, height, palette, NUM }) {
   ctx.fillStyle = palette.bg;
   ctx.fillRect(0, 0, width, height);
 
+
+  No animation or network calls. Geometry uses numerology constants
+  provided via NUM.
+*/
+
+export function renderHelix(ctx, { width, height, palette, NUM }) {
+  // Fill background with calm tone
+  ctx.fillStyle = palette.bg;
+  ctx.fillRect(0, 0, width, height);
+
   // Draw layers back to front for depth without motion
   drawVesica(ctx, width, height, palette.layers[0], NUM);
   drawTreeOfLife(ctx, width, height, palette.layers[1], palette.layers[2], NUM);
@@ -97,6 +107,10 @@ function drawVesica(ctx, w, h, color, NUM) {
       const y = (rIdx + 0.5) * (h / rows);
       circle(ctx, x - r / 2, y, r);
       ctx.stroke();
+      const x = (c + 0.5) * (w / cols);
+      const y = (rIdx + 0.5) * (h / rows);
+      circle(ctx, x - r / 2, y, r);
+      ctx.stroke();
       circle(ctx, x + r / 2, y, r);
       ctx.stroke();
     }
@@ -121,6 +135,10 @@ function drawTreeOfLife(ctx, w, h, pathColor, nodeColor, NUM) {
   const stepY = h / NUM.NINE;
 
   // node positions derived from traditional layout
+// --- Layer 2: Tree-of-Life scaffold ---
+// Ten sephirot with twenty-two connecting paths; simplified layout
+function drawTreeOfLife(ctx, w, h, pathColor, nodeColor, NUM) {
+  const cx = w / 2;
 // --- Layer 2: Tree-of-Life scaffold ---
 // Ten sephirot with twenty-two connecting paths; simplified layout
 function drawTreeOfLife(ctx, w, h, pathColor, nodeColor, NUM) {
@@ -288,6 +306,13 @@ function drawHelix(ctx, w, h, colorA, colorB, NUM) {
   const amp = h / NUM.NINE; // gentle amplitude
   const mid = h / 2;
   const step = w / segments;
+// --- Layer 4: Double-helix lattice ---
+// Two sine strands with crossbars; static, no motion
+function drawHelix(ctx, w, h, colorA, colorB, NUM) {
+  const segments = NUM.ONEFORTYFOUR; // smooth strands
+  const amp = h / NUM.NINE; // gentle amplitude
+  const mid = h / 2;
+  const step = w / segments;
 
   const strand = (phase, color) => {
     ctx.strokeStyle = color;
@@ -324,6 +349,9 @@ function drawHelix(ctx, w, h, colorA, colorB, NUM) {
     const x = i * step;
     const y1 = mid + amp * Math.sin((i / NUM.THREE) * Math.PI * 2);
     const y2 = mid + amp * Math.sin((i / NUM.THREE) * Math.PI * 2 + phase);
+  ctx.strokeStyle = colorB;
+  for (let i = 0; i <= segments; i += NUM.ELEVEN) {
+    const t = (i / segments) * Math.PI * NUM.THREE;
   ctx.strokeStyle = colorB;
   for (let i = 0; i <= segments; i += NUM.ELEVEN) {
     const t = (i / segments) * Math.PI * NUM.THREE;
