@@ -2,12 +2,14 @@
 
 Static, offline HTML+Canvas scene layering four forms of sacred geometry. Works without network or dependencies and avoids motion for ND safety.
 Static HTML + Canvas scene layering four forms of sacred geometry. Works fully offline.
+Static HTML + Canvas scene layering Vesica field, Tree-of-Life scaffold, Fibonacci curve, and a static double-helix lattice. Works fully offline with no dependencies.
 
 ## Files
 - `index.html` – entry page; open directly in a modern browser.
 - `js/helix-renderer.mjs` – ES module with pure drawing routines.
 - `data/palette.json` – optional color palette; missing file triggers safe fallback.
 - `data/palette.json` – optional colors; missing file triggers a calm fallback.
+- `data/palette.json` – optional colors; missing file triggers a safe fallback notice.
 - `README_RENDERER.md` – this guide.
 
 ## Usage
@@ -25,6 +27,13 @@ Static HTML + Canvas scene layering four forms of sacred geometry. Works fully o
    - Fibonacci spiral polyline
    - Static double-helix lattice
 4. If `palette.json` is absent, the header shows a notice and safe colors are used.
+2. Double-click `index.html` (no server needed).
+3. Canvas renders layers in order:
+   - Vesica field
+   - Tree-of-Life scaffold
+   - Fibonacci curve
+   - Static double-helix lattice
+4. If `palette.json` is absent, the header shows a notice and default colors are used.
 
 ## Palette
 `data/palette.json` structure:
@@ -45,6 +54,7 @@ Edit the file to adjust colors or remove it to test the fallback.
 - Layer order preserves depth without flattening.
 - Geometry counts use numerology constants `3, 7, 9, 11, 22, 33, 99, 144`.
 Edit `data/palette.json` to customize colors or remove it to test the fallback.
+Edit or remove the file to test fallback behavior.
 
 ## ND-safe choices
 - No animation or autoplay.
@@ -52,3 +62,4 @@ Edit `data/palette.json` to customize colors or remove it to test the fallback.
 - Geometry counts use numerology constants `3, 7, 9, 11, 22, 33, 99, 144` for proportions.
 - Layer order preserves depth without flattening.
 
+- Geometry counts use numerology constants 3, 7, 9, 11, 22, 33, 99, 144.
