@@ -3,6 +3,7 @@
   ND-safe static renderer for layered sacred geometry.
 
   Layers (back to front):
+  Layers back-to-front:
     1) Vesica field – intersecting circles
     2) Tree-of-Life scaffold – ten nodes, twenty-two paths
     3) Fibonacci curve – logarithmic spiral polyline
@@ -14,10 +15,16 @@
 
 export function renderHelix(ctx, { width, height, palette, NUM }) {
   // Fill background with calm tone
+  No animation, network calls, or external dependencies.
+  Colors and geometry use numerology constants (3,7,9,11,22,33,99,144).
+*/
+
+export function renderHelix(ctx, { width, height, palette, NUM }) {
+  // Calm background; ND-safe: no flashing
   ctx.fillStyle = palette.bg;
   ctx.fillRect(0, 0, width, height);
 
-  // Draw layers back to front for depth without motion
+  // Draw layers back to front to preserve depth without motion
   drawVesica(ctx, width, height, palette.layers[0], NUM);
   drawTreeOfLife(ctx, width, height, palette.layers[1], palette.layers[2], NUM);
   drawFibonacci(ctx, width, height, palette.layers[3], NUM);
@@ -25,6 +32,7 @@ export function renderHelix(ctx, { width, height, palette, NUM }) {
 }
 
 // --- Layer 1: Vesica field ---
+// Calm grid of intersecting circles; cols*rows = 63 < 144 for ND safety
 function drawVesica(ctx, w, h, color, NUM) {
   const cols = NUM.NINE;
   const rows = NUM.SEVEN;
@@ -35,6 +43,8 @@ function drawVesica(ctx, w, h, color, NUM) {
   ctx.strokeStyle = color;
   ctx.lineWidth = 1;
 
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
   for (let c = 0; c < cols; c++) {
     for (let rIdx = 0; rIdx < rows; rIdx++) {
       const x = (c + 0.5) * stepX;
@@ -48,6 +58,7 @@ function drawVesica(ctx, w, h, color, NUM) {
 }
 
 // --- Layer 2: Tree-of-Life scaffold ---
+// Ten sephirot nodes and twenty-two connective paths
 function drawTreeOfLife(ctx, w, h, pathColor, nodeColor, NUM) {
   const cx = w / 2;
   const stepX = w / NUM.NINE;
@@ -82,8 +93,47 @@ function drawTreeOfLife(ctx, w, h, pathColor, nodeColor, NUM) {
   const r = h / NUM.THIRTYTHREE;
   for (const n of nodes) {
     circle(ctx, n.x, n.y, r);
+  const nodesNorm = [
+    [0.5, 0.05],
+    [0.3, 0.2], [0.7, 0.2],
+    [0.3, 0.4], [0.7, 0.4],
+    [0.5, 0.5],
+    [0.3, 0.7], [0.7, 0.7],
+    [0.5, 0.8],
+    [0.5, 0.95]
+  ];
+
+  const edges = [
+    [0,1],[0,2],[0,5],
+    [1,2],[1,3],[1,5],
+    [2,4],[2,5],
+    [3,4],[3,5],[3,6],
+    [4,5],[4,7],
+    [5,6],[5,7],[5,8],
+    [6,7],[6,8],[6,9],
+    [7,8],[7,9],
+    [8,9]
+  ]; // 22 paths
+
+  ctx.strokeStyle = pathColor;
+  ctx.lineWidth = 2;
+  edges.forEach(([a, b]) => {
+    const ax = nodesNorm[a][0] * w;
+    const ay = nodesNorm[a][1] * h;
+    const bx = nodesNorm[b][0] * w;
+    const by = nodesNorm[b][1] * h;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(bx, by);
+    ctx.stroke();
+  });
+
+  ctx.fillStyle = nodeColor;
+  const r = 6; // node radius
+  nodesNorm.forEach(([nx, ny]) => {
+    circle(ctx, nx * w, ny * h, r);
     ctx.fill();
-  }
+  });
 }
 
 // --- Layer 3: Fibonacci curve ---
@@ -91,6 +141,11 @@ function drawFibonacci(ctx, w, h, color, NUM) {
   const phi = (1 + Math.sqrt(5)) / 2;
   const turns = NUM.THREE;        // three quarter-turns
   const steps = NUM.NINETYNINE;   // smoothness
+// Static logarithmic spiral approximated with a polyline
+function drawFibonacci(ctx, w, h, color, NUM) {
+  const phi = (1 + Math.sqrt(5)) / 2;
+  const turns = NUM.THREE; // three quarter-turns
+  const steps = NUM.NINETYNINE;
   const scale = Math.min(w, h) / NUM.ELEVEN;
   const cx = w * 0.2;
   const cy = h * 0.8;
@@ -112,6 +167,10 @@ function drawFibonacci(ctx, w, h, color, NUM) {
 function drawHelix(ctx, w, h, colorA, colorB, NUM) {
   const segments = NUM.ONEFORTYFOUR;
   const amp = h / NUM.NINE;
+// Two sine strands with crossbars; entirely static for ND safety
+function drawHelix(ctx, w, h, colorA, colorB, NUM) {
+  const segments = NUM.ONEFORTYFOUR; // smooth strands
+  const amp = h / NUM.NINE; // gentle amplitude
   const mid = h / 2;
   const step = w / segments;
 
