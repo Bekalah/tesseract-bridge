@@ -6,7 +6,7 @@ Static HTML + Canvas scene layering Vesica field, Tree-of-Life scaffold, Fibonac
 Static HTML+Canvas scene layering four forms of sacred geometry. Works without network or dependencies and avoids motion for ND safety.
 
 ## Files
-- `index.html` – entry page; open directly in a modern browser.
+- `index.html` – entry page; open directly in a browser.
 - `js/helix-renderer.mjs` – ES module with pure drawing routines.
 - `data/palette.json` – optional color palette; missing file triggers safe fallback.
 - `data/palette.json` – optional colors; missing file triggers a calm fallback.
@@ -24,6 +24,8 @@ Static HTML+Canvas scene layering four forms of sacred geometry. Works without n
    - Fibonacci curve
    - Static double-helix lattice
 4. If `palette.json` is absent, the header shows a notice and default colors are used.
+2. Double-click `index.html` (no server needed).
+3. The 1440x900 canvas renders, in order:
    - Vesica circle field
    - Tree-of-Life nodes and paths
    - Fibonacci spiral polyline
@@ -36,6 +38,7 @@ Static HTML+Canvas scene layering four forms of sacred geometry. Works without n
    - Fibonacci curve
    - Static double-helix lattice
 4. If `palette.json` is absent, the header shows a notice and default colors are used.
+4. If `palette.json` is absent, the header shows a notice and safe defaults are used.
 
 ## Palette
 `data/palette.json` structure:
@@ -72,3 +75,10 @@ Edit the file to customize colors or remove it to test the fallback.
 - Calm contrast and soft tones.
 - Geometry counts use numerology constants `3, 7, 9, 11, 22, 33, 99, 144`.
 - Layer order (Vesica → Tree → Fibonacci → Helix) preserves depth without flattening.
+Edit the file to customize colors or remove it to test the fallback.
+
+## ND-safe choices
+- No animation or flashing elements.
+- Calm contrast and generous spacing for readability.
+- Layer order preserves depth without flattening.
+- Geometry counts use numerology constants `3, 7, 9, 11, 22, 33, 99, 144`.

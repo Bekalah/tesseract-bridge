@@ -5,10 +5,12 @@
   Layers (back to front):
   Layers back-to-front:
     1) Vesica field – intersecting circles
+    1) Vesica field – intersecting circle grid
     2) Tree-of-Life scaffold – ten nodes, twenty-two paths
     3) Fibonacci curve – logarithmic spiral polyline
     4) Double-helix lattice – two phase-shifted strands with crossbars
 
+  No animation, network calls, or external libraries.
   Numerology constants (3,7,9,11,22,33,99,144) guide proportions.
 */
 
@@ -44,6 +46,10 @@ export function renderHelix(ctx, { width, height, palette, NUM }) {
   ctx.fillRect(0, 0, width, height);
 
   // Draw layers back to front to preserve depth without motion
+  ctx.fillStyle = palette.bg;
+  ctx.fillRect(0, 0, width, height);
+
+  // Draw layers back-to-front for depth without motion
   drawVesica(ctx, width, height, palette.layers[0], NUM);
   drawTreeOfLife(ctx, width, height, palette.layers[1], palette.layers[2], NUM);
   drawFibonacci(ctx, width, height, palette.layers[3], NUM);
@@ -54,6 +60,7 @@ export function renderHelix(ctx, { width, height, palette, NUM }) {
 // Calm grid of intersecting circles; cols*rows = 63 < 144 for ND safety
 // Intersecting circle grid; gentle symmetry, no more than 63 circles
 // Layer 1 — Vesica field: grid of overlapping circles
+// Layer 1 — Vesica field: gentle grid of overlapping circles
 function drawVesica(ctx, w, h, color, NUM) {
   const cols = NUM.NINE;
   const rows = NUM.SEVEN;
@@ -77,6 +84,11 @@ function drawVesica(ctx, w, h, color, NUM) {
       circle(ctx, x - r / 2, y, r);
       ctx.stroke();
       circle(ctx, x + r / 2, y, r);
+      const cx = c * stepX + stepX / 2;
+      const cy = rIdx * stepY + stepY / 2;
+      circle(ctx, cx - r / 2, cy, r);
+      ctx.stroke();
+      circle(ctx, cx + r / 2, cy, r);
       ctx.stroke();
     }
   }
@@ -104,6 +116,30 @@ function drawTreeOfLife(ctx, w, h, pathColor, nodeColor, NUM) {
   const paths = [
     [0,1],[0,2],[1,2],[1,3],[2,3],[1,4],[2,5],[3,4],[3,5],
     [4,5],[4,6],[5,6],[4,7],[5,8],[6,7],[6,8],[7,8],[7,9],[8,9],[1,5],[2,4],[6,9]
+// Layer 2 — Tree-of-Life scaffold: ten nodes and twenty-two paths
+function drawTreeOfLife(ctx, w, h, pathColor, nodeColor, NUM) {
+  const cx = w / 2;
+  const xo = w / NUM.NINE;
+  const ys = h / NUM.NINE;
+  const nodes = [
+    { x: cx,       y: ys },
+    { x: cx - xo,  y: ys * 2 },
+    { x: cx + xo,  y: ys * 2 },
+    { x: cx,       y: ys * 3 },
+    { x: cx - xo,  y: ys * 4 },
+    { x: cx + xo,  y: ys * 4 },
+    { x: cx,       y: ys * 5 },
+    { x: cx - xo,  y: ys * 6 },
+    { x: cx + xo,  y: ys * 6 },
+    { x: cx,       y: ys * 7 }
+  ];
+
+  const paths = [
+    [0,1],[0,2],[1,2],[1,3],[2,3],
+    [3,4],[3,5],[4,5],[4,6],[5,6],
+    [6,7],[6,8],[7,8],[7,9],[8,9],
+    [1,4],[2,5],[4,7],[5,8],[1,5],
+    [2,4],[6,9]
   ]; // 22 paths
 
   ctx.strokeStyle = pathColor;
@@ -248,6 +284,11 @@ function drawFibonacci(ctx, w, h, color, NUM) {
   const steps = NUM.NINETYNINE;
   const turns = NUM.THREE;       // three quarter turns
   const steps = NUM.NINETYNINE;  // smoothness
+// Layer 3 — Fibonacci curve: static logarithmic spiral polyline
+function drawFibonacci(ctx, w, h, color, NUM) {
+  const phi = (1 + Math.sqrt(5)) / 2;
+  const turns = NUM.THREE;      // three quarter-turns
+  const steps = NUM.NINETYNINE; // smoothness
   const scale = Math.min(w, h) / NUM.ELEVEN;
   const cx = w * 0.2;
   const cy = h * 0.8;
@@ -321,6 +362,7 @@ function drawHelix(ctx, w, h, colorA, colorB, NUM) {
 
 // helper: begin a circle path
 // helper: draw a circle path without stroking
+// helper: draw a circle
 function circle(ctx, x, y, r) {
   ctx.beginPath();
   ctx.arc(x, y, r, 0, Math.PI * 2);
