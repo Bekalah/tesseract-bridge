@@ -3,6 +3,7 @@
 Static, offline HTML+Canvas scene layering four forms of sacred geometry. Works without network or dependencies and avoids motion for ND safety.
 Static HTML + Canvas scene layering four forms of sacred geometry. Works fully offline.
 Static HTML + Canvas scene layering Vesica field, Tree-of-Life scaffold, Fibonacci curve, and a static double-helix lattice. Works fully offline with no dependencies.
+Static HTML+Canvas scene layering four forms of sacred geometry. Works without network or dependencies and avoids motion for ND safety.
 
 ## Files
 - `index.html` – entry page; open directly in a modern browser.
@@ -15,6 +16,7 @@ Static HTML + Canvas scene layering Vesica field, Tree-of-Life scaffold, Fibonac
 ## Usage
 1. Keep the files together.
 2. Double-click `index.html` (no server or network needed).
+2. Double-click `index.html` (no server needed).
 3. The 1440x900 canvas renders, in order:
    - Vesica field
    - Vesica circle field
@@ -63,3 +65,10 @@ Edit or remove the file to test fallback behavior.
 - Layer order preserves depth without flattening.
 
 - Geometry counts use numerology constants 3, 7, 9, 11, 22, 33, 99, 144.
+Edit the file to customize colors or remove it to test the fallback.
+
+## ND-safe choices
+- No animation or flashing elements.
+- Calm contrast and soft tones.
+- Geometry counts use numerology constants `3, 7, 9, 11, 22, 33, 99, 144`.
+- Layer order (Vesica → Tree → Fibonacci → Helix) preserves depth without flattening.
