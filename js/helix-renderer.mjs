@@ -9,12 +9,13 @@
     3) Fibonacci curve – logarithmic spiral polyline
     4) Double-helix lattice – two phase-shifted strands with crossbars
 
-  No animation, network calls, or external libraries.
   Numerology constants (3,7,9,11,22,33,99,144) guide proportions.
 */
 
 export function renderHelix(ctx, { width, height, palette, NUM }) {
   // Fill background with calm tone
+>>>>>>>+codex/create-3d
+>>>>>>> main/codex/integrate-open-source-tools-for-art-education-7wgvp5
   No animation, network calls, or external dependencies.
   Colors and geometry use numerology constants (3,7,9,11,22,33,99,144).
 */
@@ -42,9 +43,11 @@ function drawVesica(ctx, w, h, color, NUM) {
 
   ctx.strokeStyle = color;
   ctx.lineWidth = 1;
-
+<<<<<<< 
   ctx.strokeStyle = color;
   ctx.lineWidth = 1;
+>>>>>>>+codex/create-3d
+>>>>>>> main/codex/integrate-open-source-tools-for-art-education-7wgvp5
   for (let c = 0; c < cols; c++) {
     for (let rIdx = 0; rIdx < rows; rIdx++) {
       const x = (c + 0.5) * stepX;
@@ -60,6 +63,7 @@ function drawVesica(ctx, w, h, color, NUM) {
 // --- Layer 2: Tree-of-Life scaffold ---
 // Ten sephirot nodes and twenty-two connective paths
 function drawTreeOfLife(ctx, w, h, pathColor, nodeColor, NUM) {
+<<<<<<< codex/create-3d-rosslyn-cathedral-scene-yrb02k
   const cx = w / 2;
   const stepX = w / NUM.NINE;
   const stepY = h / NUM.NINE;
@@ -93,6 +97,29 @@ function drawTreeOfLife(ctx, w, h, pathColor, nodeColor, NUM) {
   const r = h / NUM.THIRTYTHREE;
   for (const n of nodes) {
     circle(ctx, n.x, n.y, r);
+  const nodesNorm = [
+    [0.5, 0.05],
+    [0.3, 0.2], [0.7, 0.2],
+    [0.3, 0.4], [0.7, 0.4],
+    [0.5, 0.5],
+    [0.3, 0.7], [0.7, 0.7],
+    [0.5, 0.8],
+    [0.5, 0.95]
+  ];
+
+  const edges = [
+    [0,1],[0,2],[0,5],
+    [1,2],[1,3],[1,5],
+    [2,4],[2,5],
+    [3,4],[3,5],[3,6],
+    [4,5],[4,7],
+    [5,6],[5,7],[5,8],
+    [6,7],[6,8],[6,9],
+    [7,8],[7,9],
+    [8,9]
+  ]; // 22 paths
+
+  ctx.strokeStyle = pathColor;
   const nodesNorm = [
     [0.5, 0.05],
     [0.3, 0.2], [0.7, 0.2],

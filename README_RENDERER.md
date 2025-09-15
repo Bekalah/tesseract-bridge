@@ -15,6 +15,7 @@ Static HTML + Canvas scene layering four forms of sacred geometry. Works fully o
 2. Double-click `index.html` (no server or network needed).
 3. The 1440x900 canvas renders, in order:
    - Vesica field
+   - Vesica circle field
    - Tree-of-Life nodes and paths
    - Fibonacci curve
    - Static double-helix lattice
