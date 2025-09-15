@@ -1,44 +1,22 @@
 # Cosmic Helix Renderer
 
-Static, offline HTML+Canvas scene layering four forms of sacred geometry. Works without network or dependencies and avoids motion for ND safety.
-Static HTML + Canvas scene layering four forms of sacred geometry. Works fully offline.
-Static HTML + Canvas scene layering Vesica field, Tree-of-Life scaffold, Fibonacci curve, and a static double-helix lattice. Works fully offline with no dependencies.
-Static HTML+Canvas scene layering four forms of sacred geometry. Works without network or dependencies and avoids motion for ND safety.
+Static, offline HTML + Canvas composition layering four sacred geometry systems. The scene avoids motion and harsh contrast for ND safety and runs by simply opening `index.html`.
 
 ## Files
-- `index.html` – entry page; open directly in a browser.
-- `js/helix-renderer.mjs` – ES module with pure drawing routines.
-- `data/palette.json` – optional color palette; missing file triggers safe fallback.
-- `data/palette.json` – optional colors; missing file triggers a calm fallback.
-- `data/palette.json` – optional colors; missing file triggers a safe fallback notice.
-- `README_RENDERER.md` – this guide.
+- `index.html` – entry document that sets up the canvas and loads the renderer module.
+- `js/helix-renderer.mjs` – ES module with pure drawing routines for each layer.
+- `data/palette.json` – optional palette override; missing file triggers a safe fallback notice.
+- `README_RENDERER.md` – this usage guide.
 
 ## Usage
-1. Keep the files together.
-2. Double-click `index.html` (no server or network needed).
-2. Double-click `index.html` (no server needed).
-3. The 1440x900 canvas renders, in order:
+1. Keep all files in the same directory structure.
+2. Double-click `index.html` (no server or network required).
+3. A 1440x900 canvas renders, in order:
    - Vesica field
-   - Vesica circle field
    - Tree-of-Life nodes and paths
    - Fibonacci curve
    - Static double-helix lattice
-4. If `palette.json` is absent, the header shows a notice and default colors are used.
-2. Double-click `index.html` (no server needed).
-3. The 1440x900 canvas renders, in order:
-   - Vesica circle field
-   - Tree-of-Life nodes and paths
-   - Fibonacci spiral polyline
-   - Static double-helix lattice
-4. If `palette.json` is absent, the header shows a notice and safe colors are used.
-2. Double-click `index.html` (no server needed).
-3. Canvas renders layers in order:
-   - Vesica field
-   - Tree-of-Life scaffold
-   - Fibonacci curve
-   - Static double-helix lattice
-4. If `palette.json` is absent, the header shows a notice and default colors are used.
-4. If `palette.json` is absent, the header shows a notice and safe defaults are used.
+4. If `data/palette.json` is absent, the header reports the fallback and calm defaults are used.
 
 ## Palette
 `data/palette.json` structure:
@@ -51,34 +29,10 @@ Static HTML+Canvas scene layering four forms of sacred geometry. Works without n
 }
 ```
 
-Edit the file to adjust colors or remove it to test the fallback.
+Edit the file to customize colors, or delete it to exercise the fallback notice.
 
 ## ND-safe choices
-- No animation or autoplay.
-- Calm contrast and generous spacing for readability.
-- Layer order preserves depth without flattening.
-- Geometry counts use numerology constants `3, 7, 9, 11, 22, 33, 99, 144`.
-Edit `data/palette.json` to customize colors or remove it to test the fallback.
-Edit or remove the file to test fallback behavior.
-
-## ND-safe choices
-- No animation or autoplay.
-- Calm contrast and soft tones for readability.
-- Geometry counts use numerology constants `3, 7, 9, 11, 22, 33, 99, 144` for proportions.
-- Layer order preserves depth without flattening.
-
-- Geometry counts use numerology constants 3, 7, 9, 11, 22, 33, 99, 144.
-Edit the file to customize colors or remove it to test the fallback.
-
-## ND-safe choices
-- No animation or flashing elements.
-- Calm contrast and soft tones.
-- Geometry counts use numerology constants `3, 7, 9, 11, 22, 33, 99, 144`.
-- Layer order (Vesica → Tree → Fibonacci → Helix) preserves depth without flattening.
-Edit the file to customize colors or remove it to test the fallback.
-
-## ND-safe choices
-- No animation or flashing elements.
-- Calm contrast and generous spacing for readability.
-- Layer order preserves depth without flattening.
-- Geometry counts use numerology constants `3, 7, 9, 11, 22, 33, 99, 144`.
+- No animation, autoplay, or network requests.
+- Calm contrast, layered order, and generous spacing for readability.
+- Layer hierarchy (Vesica → Tree → Fibonacci → Helix) keeps geometry multi-layered rather than flattened.
+- Geometry counts align with numerology constants `3, 7, 9, 11, 22, 33, 99, 144` to honor the cosmology brief.
