@@ -1,0 +1,168 @@
+{
+  "id": "C144N-072",
+  "label": "Bridge of Resonant Names",
+  "metadata": {
+    "room_id": "R072",
+    "chapel_id": "C33-09",
+    "tarot_anchor": "LA-00",
+    "shem_sequence": ["SHEM-01", "SHEM-36"],
+    "intent": "Unify the 72-fold angelic and infernal teachings into a trauma-aware study of balance and reconciliation.",
+    "narrative": "Node 072 houses a research cloister dedicated to mapping every 72-fold tradition into practical creative experiments.",
+    "keywords": ["bridge", "synthesis", "double-helix", "balance"],
+    "safety_notes": "ND-safe sanctuary: no motion, low luminance, clear exits, offline resources only."
+  },
+  "correspondence_sets": {
+    "angelic_names": {
+      "source": "registry/maps/angel_demon_pairs.csv",
+      "description": "Maps Shem angel names to infernal counterparts and virtues for reconciliation work.",
+      "filters": {
+        "focus": ["SHEM-01", "SHEM-36"],
+        "group_size": 72
+      }
+    },
+    "i_ching": {
+      "source": "docs/iching_node072.md",
+      "description": "Hexagram triads aligned with 8×9 harmonic lattice for meditative sequencing.",
+      "focus_hexagrams": [1, 20, 57]
+    },
+    "geometry_patterns": {
+      "source": "docs/geometry_manifests/node072_layers.md",
+      "description": "Layer manifest referencing vesica grid, Tree paths, Fibonacci arc, and helix lattice anchors.",
+      "grid_dimensions": [12, 12]
+    },
+    "botanical_allies": {
+      "source": "docs/botanical/node072_apothecary.md",
+      "description": "Calming botanicals with 72 petal or leaflet structures for altar placement.",
+      "specimens": ["water lily", "sage", "lotus"]
+    }
+  },
+  "pattern_fields": {
+    "vesica": {
+      "columns": 9,
+      "rows": 7,
+      "radius_ratio": 0.48,
+      "notes": "Uses 9×7 lattice = 63 circles, doubled for vesica overlay while staying under the 144 calm threshold."
+    },
+    "tree_of_life": {
+      "node_radius_factor": 33,
+      "path_weight": 2,
+      "layout": "standard",
+      "notes": "Ten sephirot rendered with radius = min(width, height) / 33 to honor numerology."
+    },
+    "fibonacci": {
+      "quarter_turns": 3,
+      "segments": 99,
+      "origin_offset": [0.18, 0.82],
+      "notes": "Static spiral with 99 segments for smoothness and ND-safe pacing."
+    },
+    "helix": {
+      "segments": 144,
+      "amplitude_ratio": 0.11,
+      "phase_shift": 3.14159,
+      "crossbar_step": 11,
+      "notes": "Double-strand helix with 144 segments, crossbars every 11 steps for 13 groups (approx.), referencing the cosmic bridge."
+    }
+  },
+  "laboratory_tools": {
+    "analysis": [
+      {
+        "id": "matrix72",
+        "label": "72-Name Concordance Matrix",
+        "type": "grid",
+        "inputs": ["angelic_names", "i_ching"],
+        "outputs": ["csv", "printable_table"],
+        "description": "Cross-index the 72 Shem names with hexagram triads and infernal lessons for study notes."
+      },
+      {
+        "id": "harmonic_calculator",
+        "label": "Harmonic Resonance Calculator",
+        "type": "calculator",
+        "inputs": ["geometry_patterns"],
+        "outputs": ["json"],
+        "description": "Computes ratio relationships (3/6/9/12/18/24) for aligning sacred geometry to sound intervals without audio playback."
+      }
+    ],
+    "creative": [
+      {
+        "id": "vesica_overlay_kit",
+        "label": "Vesica Overlay Kit",
+        "type": "canvas_overlay",
+        "inputs": ["geometry_patterns", "botanical_allies"],
+        "outputs": ["layered_svg", "png"],
+        "description": "Places botanical emblems on vesica intersections; exports layered SVG without flattening."
+      },
+      {
+        "id": "helix_storyboard",
+        "label": "Helix Storyboard",
+        "type": "grid_template",
+        "inputs": ["helix", "angelic_names"],
+        "outputs": ["markdown"],
+        "description": "Assigns narrative beats to helix crossbars for journaling or static storyboard creation."
+      }
+    ]
+  },
+  "experiment_playbooks": [
+    {
+      "id": "balance_weave",
+      "title": "Balance Weave Triptych",
+      "purpose": "Create a three-panel study card balancing angelic virtue, infernal teaching, and hexagram guidance.",
+      "inputs": ["matrix72", "vesica_overlay_kit"],
+      "outputs": ["json", "png"],
+      "steps": [
+        "Select an angelic/infernal pair using the concordance matrix.",
+        "Pull the matching hexagram triad from the I Ching set.",
+        "Lay the trio onto vesica intersections with the overlay kit.",
+        "Export the panels as JSON metadata plus a static PNG snapshot."
+      ],
+      "egregore_prompt": "Ask the Fool to highlight which insight bridges the two extremes."
+    },
+    {
+      "id": "vesica_palette_map",
+      "title": "Vesica Palette Cartography",
+      "purpose": "Map calming color harmonies across the vesica grid using botanical allies.",
+      "inputs": ["vesica_overlay_kit", "harmonic_calculator"],
+      "outputs": ["layered_svg"],
+      "steps": [
+        "Load vesica geometry with radius ratio 0.48 and 9×7 layout.",
+        "Use harmonic calculator to derive triadic color ratios (3:6:9).",
+        "Assign botanical emblems to intersections matching their petal counts.",
+        "Export the layout as a layered SVG, preserving depth."],
+      "egregore_prompt": "Invite the Bridge Custodian to approve the color gate."
+    },
+    {
+      "id": "helix_songline",
+      "title": "Helix Songline Grid",
+      "purpose": "Generate a rhythmic study grid (72 beats) aligned to helix crossbars for chant or breath pacing.",
+      "inputs": ["helix_storyboard"],
+      "outputs": ["csv", "markdown"],
+      "steps": [
+        "Mark 72 positions along the helix storyboard using crossbars at every 11 steps.",
+        "Group beats into 3 × 24 phrases for balanced pacing.",
+        "Document breath/chant cues in Markdown for offline reading.",
+        "Optionally export beat markers as CSV for external tools (no playback)."
+      ],
+      "egregore_prompt": "Consult the Fool for pacing guidance before practice."
+    }
+  ],
+  "egregore_links": {
+    "la_00": {
+      "prompt": "Guide the traveler across the 72-fold bridge with curiosity and care.",
+      "reflection_question": "Which rung on the helix feels steady, and which needs tending?",
+      "closing_grounding": "Name three calm sensations, thank the custodians, close the notebook."
+    },
+    "bridge_custodian": {
+      "prompt": "Audit the balance between angelic virtues and infernal lessons in today’s weave.",
+      "reflection_question": "What practical repair can be made before moving to the next experiment?",
+      "closing_grounding": "Touch the grounding stone, breathe for nine counts, record the insight." 
+    }
+  },
+  "offline_notes": {
+    "palette_fallback": "Use ND-safe palette from data/palette.json when custom colors are absent.",
+    "safety": "Limit sessions to 72 minutes max, insert breaks every 9 minutes, and close with grounding prompts.",
+    "journal_template": "Start entries with date, selected angelic/infernal pair, hexagram, and closing reflections.",
+    "status_messages": {
+      "dataset_missing": "Node 072 dataset missing; load defaults and surface calming notice.",
+      "palette_missing": "Palette missing; revert to ND-safe defaults and log fallback use." 
+    }
+  }
+}
