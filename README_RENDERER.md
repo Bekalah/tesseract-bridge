@@ -16,7 +16,7 @@ Static, offline HTML + Canvas composition layering four sacred geometry systems.
    - Tree-of-Life nodes and paths
    - Fibonacci curve
    - Static double-helix lattice
-4. If `data/palette.json` is absent, the header reports the fallback and calm defaults are used.
+4. If `data/palette.json` is absent, the header reports the fallback and a calm inline notice is drawn on-canvas while defaults are used.
 
 ## Palette
 `data/palette.json` structure:
@@ -30,6 +30,10 @@ Static, offline HTML + Canvas composition layering four sacred geometry systems.
 ```
 
 Edit the file to customize colors, or delete it to exercise the fallback notice.
+
+When launched via `file://`, browsers often block local fetches; the renderer therefore skips the request and displays the inline
+notice while using the defaults. To preview custom palettes, either adjust the defaults inside `index.html` or launch a local
+server temporarily and open the same files there.
 
 ## ND-safe choices
 - No animation, autoplay, or network requests.

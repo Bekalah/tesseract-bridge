@@ -12,7 +12,7 @@
   Every routine is pure and receives the drawing context plus explicit data.
 */
 
-export function renderHelix(ctx, { width, height, palette, NUM }) {
+export function renderHelix(ctx, { width, height, palette, NUM, notices = [] }) {
   // ND-safe background: calm tone, no flashing or gradients
   ctx.save();
   ctx.fillStyle = palette.bg;
@@ -23,6 +23,7 @@ export function renderHelix(ctx, { width, height, palette, NUM }) {
   drawTreeOfLife(ctx, width, height, palette.layers[1], palette.layers[2], NUM);
   drawFibonacci(ctx, width, height, palette.layers[3], NUM);
   drawHelix(ctx, width, height, palette.layers[4], palette.layers[5], NUM);
+  drawNotices(ctx, width, height, palette.ink, notices);
   ctx.restore();
 }
 
@@ -186,4 +187,64 @@ function strokeLine(ctx, ax, ay, bx, by) {
   ctx.moveTo(ax, ay);
   ctx.lineTo(bx, by);
   ctx.stroke();
+}
+
+// --- Notices layer ----------------------------------------------------------
+function drawNotices(ctx, w, h, textColor, notices) {
+  if (!Array.isArray(notices) || notices.length === 0) {
+    return;
+  }
+
+  const padding = 12;
+  const maxWidth = w / 3;
+  const lineHeight = 18;
+
+  ctx.save();
+  ctx.font = "14px system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+  ctx.textBaseline = "top";
+
+  let blockTop = padding;
+  notices.forEach((notice) => {
+    const lines = wrapNoticeLines(notice, maxWidth - padding * 2, ctx);
+    const boxHeight = lines.length * lineHeight + padding;
+
+    // ND-safe: muted panel reinforces calm fallback messaging without flashing.
+    ctx.fillStyle = "rgba(17, 17, 26, 0.78)";
+    ctx.fillRect(padding, blockTop, maxWidth, boxHeight);
+
+    ctx.strokeStyle = "rgba(232, 232, 240, 0.35)";
+    ctx.strokeRect(padding, blockTop, maxWidth, boxHeight);
+
+    ctx.fillStyle = textColor;
+    lines.forEach((line, index) => {
+      ctx.fillText(line, padding * 1.5, blockTop + padding / 2 + index * lineHeight);
+    });
+
+    blockTop += boxHeight + padding;
+  });
+
+  ctx.restore();
+}
+
+function wrapNoticeLines(text, maxLineWidth, ctx) {
+  const safeText = String(text);
+  const words = safeText.split(" ");
+  const lines = [];
+  let current = "";
+
+  words.forEach((word) => {
+    const tentative = current ? current + " " + word : word;
+    if (ctx.measureText(tentative).width > maxLineWidth && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = tentative;
+    }
+  });
+
+  if (current) {
+    lines.push(current);
+  }
+
+  return lines;
 }
