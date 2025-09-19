@@ -1,7 +1,19 @@
 {
-  "nodes": [],
+  "nodes": [
+    "C144N-001"
+  ],
   "gates": [],
-  "rooms": [],
-  "arcana": [],
-  "shem": []
+  "chapels": [
+    "C33-01"
+  ],
+  "rooms": [
+    "R001"
+  ],
+  "arcana": [
+    "LA-00-FOOL",
+    "LA-05-HIEROPHANT"
+  ],
+  "shem": [
+    "SHEM-01"
+  ]
 }
