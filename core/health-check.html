@@ -1,0 +1,14 @@
+<!doctype html><meta charset="utf-8"><title>Health</title>
+<style>body{font:14px/1.4 ui-serif,Georgia,serif;padding:1rem}.ok{color:#0a0}.bad{color:#a00}</style>
+<ul id="r"></ul>
+<script>
+const tests = ["index.html"];
+Promise.allSettled(tests.map(t => fetch(t,{method:"HEAD"}))).then(rs=>{
+  const r=document.getElementById('r');
+  rs.forEach((x,i)=>{const li=document.createElement('li');
+    li.className = x.status==="fulfilled" && x.value.ok ? "ok" : "bad";
+    li.textContent = tests[i] + " → " + (x.status==="fulfilled"?x.value.status:x.reason);
+    r.appendChild(li);
+  });
+});
+</script>

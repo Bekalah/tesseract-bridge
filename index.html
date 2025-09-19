@@ -46,6 +46,39 @@
       }
     }
 
+    function mergePalette(defaultPalette, overridePalette, notices) {
+      const base = { ...defaultPalette, layers: [...defaultPalette.layers] };
+      if (!overridePalette || typeof overridePalette !== "object") {
+        return base;
+      }
+
+      if (typeof overridePalette.bg === "string") {
+        base.bg = overridePalette.bg;
+      } else {
+        notices.push("Palette missing bg; using default.");
+      }
+
+      if (typeof overridePalette.ink === "string") {
+        base.ink = overridePalette.ink;
+      } else {
+        notices.push("Palette missing ink; using default.");
+      }
+
+      if (Array.isArray(overridePalette.layers)) {
+        for (let i = 0; i < base.layers.length; i += 1) {
+          if (typeof overridePalette.layers[i] === "string") {
+            base.layers[i] = overridePalette.layers[i];
+          } else if (overridePalette.layers[i] !== undefined) {
+            notices.push("Palette layer " + (i + 1) + " invalid; using default.");
+          }
+        }
+      } else {
+        notices.push("Palette layers missing; using defaults.");
+      }
+
+      return base;
+    }
+
     const defaults = {
       palette: {
         bg:"#0b0b12",
@@ -54,14 +87,21 @@
       }
     };
 
-    const palette = await loadJSON("./data/palette.json");
-    const active = palette || defaults.palette;
     const notices = [];
+    const palette = await loadJSON("./data/palette.json");
+    const active = mergePalette(defaults.palette, palette, notices);
+
     if (palette) {
       elStatus.textContent = "Palette loaded.";
     } else {
       elStatus.textContent = "Palette missing; using safe fallback.";
       notices.push("Palette JSON not available; calm defaults engaged.");
+    }
+
+    if (!ctx) {
+      elStatus.textContent = "2D canvas context unavailable.";
+      notices.push("Canvas context unavailable; nothing rendered.");
+      return;
     }
 
     // Numerology constants used by geometry routines
