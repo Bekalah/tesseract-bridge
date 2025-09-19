@@ -1,0 +1,131 @@
+{
+  "last_updated": "2025-09-19",
+  "repos": [
+    {
+      "id": "liber-arcanae",
+      "role": "Tarot codex",
+      "status": "source-of-truth",
+      "linked_ids": [
+        "LA-00-FOOL",
+        "LA-05-HIEROPHANT"
+      ],
+      "bridges": [
+        {
+          "id": "liber-arcanae-game",
+          "focus": [
+            "deck-state",
+            "antahkarana-paths",
+            "tree-of-life-layouts"
+          ],
+          "next_actions": [
+            "mirror arcana metadata into game manifests",
+            "confirm Fool and Hierophant bridge use Antahkarana geometry",
+            "sync palette layers with renderer defaults"
+          ]
+        }
+      ],
+      "upstreams": [
+        "codex-14499"
+      ],
+      "notes": "Keep numerology counts intact (3,7,9,11,22,33,99,144) when mirroring cards."
+    },
+    {
+      "id": "liber-arcanae-game",
+      "role": "Playable study deck",
+      "status": "pending-merge",
+      "linked_ids": [
+        "R001",
+        "C144N-001"
+      ],
+      "bridges": [
+        {
+          "id": "cosmogenesis-learning-engine",
+          "focus": [
+            "toggles",
+            "chapel-bindings"
+          ],
+          "next_actions": [
+            "map chapel C33-01 into toggle manifest",
+            "surface ND-safe study prompts referenced by bridge renderer"
+          ]
+        },
+        {
+          "id": "stone-cathedral",
+          "focus": [
+            "room-provenance",
+            "sacred-geometry-slots"
+          ],
+          "next_actions": [
+            "confirm room R001 geometry slot availability",
+            "add provenance citation to cathedral gallery"
+          ]
+        }
+      ],
+      "notes": "Align Antahkarana ladder counts with bridge checklist before merge."
+    },
+    {
+      "id": "circuitum99",
+      "role": "Soul archive",
+      "status": "reference",
+      "linked_ids": [],
+      "bridges": [
+        {
+          "id": "liber-arcanae-game",
+          "focus": [
+            "card-lineage",
+            "ritual-safety"
+          ],
+          "next_actions": [
+            "pull CSL citations for Fool and Hierophant",
+            "verify trauma-informed notes propagate into game repo"
+          ]
+        }
+      ],
+      "notes": "Use bibliography anchors in registry/notes/bibliography.json as citations are added."
+    },
+    {
+      "id": "cosmogenesis-learning-engine",
+      "role": "Mind toggles",
+      "status": "reference",
+      "linked_ids": [
+        "C33-01"
+      ],
+      "bridges": [
+        {
+          "id": "liber-arcanae-game",
+          "focus": [
+            "chapel-toggles",
+            "resonance-maps"
+          ],
+          "next_actions": [
+            "reserve Antahkarana bridge toggle slot",
+            "document resonance layering for Tarot rooms"
+          ]
+        }
+      ],
+      "notes": "No automation; keep toggle manifests editable offline."
+    },
+    {
+      "id": "stone-cathedral",
+      "role": "Body labyrinth",
+      "status": "reference",
+      "linked_ids": [
+        "R001"
+      ],
+      "bridges": [
+        {
+          "id": "liber-arcanae-game",
+          "focus": [
+            "room-alignment",
+            "exit-markers"
+          ],
+          "next_actions": [
+            "ensure exit signage mirrored when deck room merges",
+            "record ND-safe adjustments in cathedral changelog"
+          ]
+        }
+      ],
+      "notes": "Keep layered depth when mirroring cathedral rooms into Tarot game."
+    }
+  ]
+}
