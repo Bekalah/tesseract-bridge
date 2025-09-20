@@ -1,8 +1,15 @@
-/*
-  first-paint-octagram.js
-  Renders a static octagram field as a first-paint fallback when hero art is unavailable.
-  ND-safe: no motion, soft gradient, clear geometry for grounding without overstimulation.
-*/
+/**
+ * Draws a static octagram scene onto a canvas element as a first-paint fallback.
+ *
+ * Renders a soft radial gradient background and eight faint radial spokes centered
+ * on the canvas. Designed to be non-animated and low-stimulation. The function
+ * mutates the target canvas (sets its width/height and paints into it).
+ *
+ * @param {string} [id="opus"] - DOM id of the target <canvas> element.
+ * @param {number} [width=1200] - Canvas width in pixels.
+ * @param {number} [height=675] - Canvas height in pixels.
+ * @returns {boolean} True if drawing succeeded; false if the canvas element or its 2D context could not be obtained.
+ */
 
 export function paintOctagram(id = "opus", width = 1200, height = 675) {
   const canvas = document.getElementById(id);
