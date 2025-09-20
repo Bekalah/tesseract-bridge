@@ -1,0 +1,9 @@
+{
+  "name": "tesseract-bridge",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prebuild": "node scripts/verify-absent.mjs",
+    "build": "vite build"
+  }
+}
