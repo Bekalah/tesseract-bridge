@@ -1,20 +1,17 @@
-# Cosmic Helix Renderer
+# Cosmic Helix Renderer & Integration Hub
 
-Static, offline HTML + Canvas composition layering four sacred geometry systems. The scene avoids motion and harsh contrast for ND safety and runs by simply opening `index.html`.
+Static, offline HTML + Canvas composition layering four sacred geometry systems and an accompanying integration hub fed by the bridge manifest. The scene avoids motion and harsh contrast for ND safety and runs by simply opening `index.html`.
 
 ## Files
-- `index.html` – entry document that sets up the canvases, altar loader, and helix renderer.
-- `js/helix-renderer.mjs` – ES module with pure drawing routines for each layer.
-- `assets/js/first-paint-octagram.js` – draws the octagram first paint while altar art resolves.
-- `assets/js/art-loader.js` – fetches the WEBP manifest and mounts the hero art when available.
-- `assets/art/manifest.json` – declares the hero WEBP and policy guardrails.
-- `data/palette.json` – optional palette override; missing file triggers a safe fallback notice.
+- `index.html` – main document with integration hub layout, manifest-driven repo cards, and the helix renderer canvas.
+- `js/helix-renderer.mjs` – ES module with pure drawing routines for each sacred geometry layer.
+- `data/palette.json` – optional palette override; missing file triggers a calm fallback notice.
 - `README_RENDERER.md` – this usage guide.
 
 ## Usage
 1. Keep all files in the same directory structure.
 2. Double-click `index.html` (no server or network required).
-3. A WEBP altar attempts to load above the helix canvas. When offline or blocked, the octagram first paint remains active with a calm notice.
+3. The Integration Hub section reads `registry/notes/bridge_manifest.json` via JSON modules and renders one card per repo. Missing data produces a gentle inline notice and keeps the layout calm.
 4. A 1440x900 canvas renders, in order:
    - Vesica field
    - Tree-of-Life nodes and paths
@@ -33,14 +30,15 @@ Static, offline HTML + Canvas composition layering four sacred geometry systems.
 }
 ```
 
-Edit the file to customize colors, or delete it to exercise the fallback notice.
+Edit the file to customize colors, or delete it to exercise the fallback notice. The module import gracefully fails when the file is missing and records the fallback inside the canvas notices.
 
-When launched via `file://`, browsers often block local fetches; the renderer therefore skips the request and displays the inline
-notice while using the defaults. To preview custom palettes, either adjust the defaults inside `index.html` or launch a local
-server temporarily and open the same files there.
+## Manifest-driven cards
+- Repo cards derive from `registry/notes/bridge_manifest.json`. Update that manifest to change roles, status indicators, bridge focus, or notes.
+- Card titles use slug-friendly capitalization with optional overrides defined in `index.html`. Extend the override map if a repo needs a specific display name.
+- Link buttons use slug-based Netlify and GitHub URLs; adjust them in the script if a realm uses a different endpoint.
 
 ## ND-safe choices
-- No animation or autoplay; only optional local manifest fetches.
+- No animation or autoplay; only local JSON module reads.
 - Calm contrast, layered order, and generous spacing for readability.
 - Layer hierarchy (Vesica → Tree → Fibonacci → Helix) keeps geometry multi-layered rather than flattened.
 - Geometry counts align with numerology constants `3, 7, 9, 11, 22, 33, 99, 144` to honor the cosmology brief.
