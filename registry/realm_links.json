@@ -1,0 +1,93 @@
+{
+  "cosmogenesis-learning-engine": {
+    "title": "Cosmogenesis Learning Engine",
+    "role": "Mind toggles and resonance maps",
+    "live": "https://cosmogenesis-learning-engine.netlify.app/",
+    "paths": {
+      "home": "/",
+      "chapels": "/chapels/",
+      "toggles": "/toggles/",
+      "resonance": "/resonance/manifest.json"
+    },
+    "last_sync": "2025-09-20"
+  },
+  "stone-grimoire": {
+    "title": "Stone Grimoire",
+    "role": "Geometry provenance and spiral palettes",
+    "live": "https://stone-grimoire.netlify.app/",
+    "paths": {
+      "home": "/",
+      "geometry_manifest": "/export/geometry_manifest.json",
+      "palette_manifest": "/export/spiral_palettes.json"
+    },
+    "last_sync": "2025-09-20"
+  },
+  "circuitum99": {
+    "title": "Circuitum99",
+    "role": "Soul archive and CSL citations",
+    "live": "https://circuitum99.netlify.app/",
+    "paths": {
+      "home": "/",
+      "bibliography": "/bibliography/",
+      "lattice": "/lattice/"
+    },
+    "last_sync": "2025-09-20"
+  },
+  "liber-arcanae": {
+    "title": "Liber Arcanae",
+    "role": "Tarot codex (canon)",
+    "live": "https://liber-arcanae.netlify.app/",
+    "paths": {
+      "home": "/",
+      "canon": "/canon/",
+      "gallery": "/gallery/",
+      "manifests": "/data/cards/manifest.json"
+    },
+    "last_sync": "2025-09-20"
+  },
+  "liber-arcanae-game": {
+    "title": "Liber Arcanae Game",
+    "role": "Playable study deck",
+    "live": "https://liber-arcanae-game.netlify.app/",
+    "paths": {
+      "home": "/",
+      "deck": "/deck/",
+      "state_manifest": "/manifests/deck-state.json",
+      "tree_paths": "/manifests/tree-of-life.json"
+    },
+    "last_sync": "2025-09-20"
+  },
+  "stone-cathedral": {
+    "title": "Stone Cathedral",
+    "role": "Labyrinth rooms",
+    "live": "https://stone-cathedral.netlify.app/",
+    "paths": {
+      "home": "/",
+      "rooms": "/rooms/",
+      "changelog": "/docs/changelog.html"
+    },
+    "last_sync": "2025-09-20"
+  },
+  "magical-mystery-house": {
+    "title": "Magical Mystery House",
+    "role": "Labyrinth wormholes",
+    "live": "https://magical-mystery-house.netlify.app/",
+    "paths": {
+      "home": "/",
+      "rooms": "/rooms/",
+      "wormholes": "/wormholes/"
+    },
+    "last_sync": "2025-09-20"
+  },
+  "codex-14499": {
+    "title": "Codex 14499",
+    "role": "144-node spiral reference",
+    "live": "https://codex-14499.netlify.app/",
+    "paths": {
+      "home": "/",
+      "nodes": "/nodes/",
+      "spheres": "/spheres/"
+    },
+    "last_sync": "2025-09-20"
+  }
+}

@@ -1,11 +1,30 @@
-<!doctype html><meta charset="utf-8"><title>Cathedral Health ✓</title>
-<style>body{font:14px ui-monospace,monospace;background:#0b0c10;color:#e6e6e6;padding:2rem}</style>
-<h1>Cathedral Health ✓</h1>
-<ul>
-  <li>Build: <script>document.write(new Date(document.lastModified).toISOString())</script></li>
-  <li>Auth: <span id="auth">none</span></li>
-</ul>
-<script>
-  const gated = document.cookie.includes('nf_jwt') || !!window.netlifyIdentity;
-  if (gated) document.getElementById('auth').textContent = 'possible gate detected';
-</script>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Tesseract Bridge — Health OK</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body{font:14px ui-monospace,monospace;background:#0b0c10;color:#e6e6e6;margin:0;padding:2rem;line-height:1.5}
+    h1{margin:0 0 1rem;font-size:1.5rem}
+    dl{margin:0 0 1.5rem}
+    dt{font-weight:600}
+    dd{margin:0 0 0.75rem}
+    a{color:#a6a6c1}
+  </style>
+</head>
+<body>
+  <h1>Tesseract Bridge — Health OK</h1>
+  <dl>
+    <dt>Last Modified</dt>
+    <dd><script>document.write(new Date(document.lastModified).toISOString())</script></dd>
+    <dt>Realm Links</dt>
+    <dd><a href="/registry/realm_links.json">/registry/realm_links.json</a></dd>
+    <dt>Bridge Script</dt>
+    <dd><a href="/bridge.js">/bridge.js</a></dd>
+    <dt>Event Log</dt>
+    <dd><a href="/events/2025-09-20.jsonl">/events/2025-09-20.jsonl</a></dd>
+  </dl>
+  <p>Offline-first pledge: endpoints stay static and require no authentication.</p>
+</body>
+</html>
