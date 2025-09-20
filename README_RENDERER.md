@@ -3,9 +3,13 @@
 Static, offline HTML + Canvas composition layering four sacred geometry systems. The scene avoids motion and harsh contrast for ND safety and runs by simply opening `index.html`.
 
 ## Files
-- `index.html` – entry document that sets up the canvas and loads the renderer module.
+- `index.html` – entry document that sets up the canvases, loads the renderer module, paints the octagram fallback, and mounts optional hero art.
 - `js/helix-renderer.mjs` – ES module with pure drawing routines for each layer.
+- `assets/js/first-paint-octagram.js` – chapel-safe first paint to ensure a calm field if hero art is offline.
+- `assets/js/art-loader.js` – manifest-driven WEBP loader with ND-safe fallbacks.
+- `assets/art/manifest.json` – declares the live WEBP hero asset (relative paths keep it offline-friendly).
 - `data/palette.json` – optional palette override; missing file triggers a safe fallback notice.
+- `scripts/verify-absent.mjs` – guard executed before builds to ensure forbidden PNG masters stay absent.
 - `README_RENDERER.md` – this usage guide.
 
 ## Usage
@@ -16,7 +20,9 @@ Static, offline HTML + Canvas composition layering four sacred geometry systems.
    - Tree-of-Life nodes and paths
    - Fibonacci curve
    - Static double-helix lattice
-4. If `data/palette.json` is absent, the header reports the fallback and a calm inline notice is drawn on-canvas while defaults are used.
+4. The octagram canvas (`#opus`) paints immediately, so visitors perceive the chapel geometry even if hero art or network requests stall.
+5. If `assets/art/black-madonna-altar-1600.webp` is present, the manifest loader displays it; otherwise `#hero-art` shows a calm fallback note while the octagram remains visible.
+6. The header status line reports palette or hero-art fallbacks as they happen, and `renderHelix` writes the same notes onto the geometry canvas.
 
 ## Palette
 `data/palette.json` structure:
@@ -31,12 +37,17 @@ Static, offline HTML + Canvas composition layering four sacred geometry systems.
 
 Edit the file to customize colors, or delete it to exercise the fallback notice.
 
-When launched via `file://`, browsers often block local fetches; the renderer therefore skips the request and displays the inline
-notice while using the defaults. To preview custom palettes, either adjust the defaults inside `index.html` or launch a local
-server temporarily and open the same files there.
+When launched via `file://`, browsers often block local fetches; the renderer therefore skips the palette request and displays the inline notice while using the defaults. To preview custom palettes, either adjust the defaults inside `index.html` or launch a temporary local server.
+
+## Guards and health checks
+- `.gitattributes` disables LFS filters for PNG to prevent accidental smudging.
+- `.gitignore` blocks `assets/art/black-madonna-altar-1600.png` from returning.
+- `scripts/verify-absent.mjs` exits non-zero if the forbidden PNG reappears. It runs via the `prebuild` npm script and can be invoked manually with `node scripts/verify-absent.mjs`.
+- `core/health-check.html` offers an offline diagnostics page to confirm build timestamp and whether Netlify gating is active.
 
 ## ND-safe choices
-- No animation, autoplay, or network requests.
+- No animation, autoplay, or network dependencies beyond optional manifest fetches (which gracefully fail when offline).
 - Calm contrast, layered order, and generous spacing for readability.
 - Layer hierarchy (Vesica → Tree → Fibonacci → Helix) keeps geometry multi-layered rather than flattened.
 - Geometry counts align with numerology constants `3, 7, 9, 11, 22, 33, 99, 144` to honor the cosmology brief.
+- Octagram fallback and WEBP-only manifest prevent PNG resurrection while keeping the public shell beautiful.

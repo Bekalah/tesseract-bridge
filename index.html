@@ -10,8 +10,13 @@
     :root { --bg:#0b0b12; --ink:#e8e8f0; --muted:#a6a6c1; }
     html,body { margin:0; padding:0; background:var(--bg); color:var(--ink); font:14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
     header { padding:12px 16px; border-bottom:1px solid #1d1d2a; }
-    .status { color:var(--muted); font-size:12px; }
-    #stage { display:block; margin:16px auto; box-shadow:0 0 0 1px #1d1d2a; }
+    .status-list { list-style:none; margin:8px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:12px; font-size:12px; color:var(--muted); }
+    .status-list li { margin:0; }
+    main { max-width:1200px; margin:0 auto; padding:16px; display:flex; flex-direction:column; gap:24px; }
+    #opus, #stage { display:block; margin:0 auto; box-shadow:0 0 0 1px #1d1d2a; }
+    #opus { max-width:100%; height:auto; }
+    #hero-art { min-height:24px; text-align:center; color:var(--muted); font-size:13px; }
+    #hero-art img { display:block; margin:0 auto; max-width:100%; height:auto; }
     .note { max-width:900px; margin:0 auto 16px; color:var(--muted); }
     code { background:#11111a; padding:2px 4px; border-radius:3px; }
   </style>
@@ -19,18 +24,55 @@
 <body>
   <header>
     <div><strong>Cosmic Helix Renderer</strong> — layered sacred geometry (offline, ND-safe)</div>
-    <div class="status" id="status">Loading palette...</div>
+    <ul class="status-list">
+      <li id="status">Loading palette...</li>
+      <li id="hero-status">Preparing hero art fallback...</li>
+    </ul>
   </header>
 
-  <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
-  <p class="note">This static renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
+  <main>
+    <canvas id="opus" width="1200" height="675" aria-label="Opalescent octagram field"></canvas>
+    <div id="hero-art" aria-live="polite">Hero art pending.</div>
+    <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
+    <p class="note">This static renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
+  </main>
 
   <script type="module">
     import { renderHelix } from "./js/helix-renderer.mjs";
+    import { paintOctagram } from "./assets/js/first-paint-octagram.js";
+    import { mountArt } from "./assets/js/art-loader.js";
 
-    const elStatus = document.getElementById("status");
-    const canvas = document.getElementById("stage");
-    const ctx = canvas.getContext("2d");
+    const paletteStatus = document.getElementById("status");
+    const heroStatus = document.getElementById("hero-status");
+    const heroHost = document.getElementById("hero-art");
+    const stageCanvas = document.getElementById("stage");
+    const stageCtx = stageCanvas.getContext("2d");
+
+    paintOctagram();
+
+    const notices = [];
+    const heroMessages = new Set();
+
+    function noteHeroFallback(message) {
+      if (heroHost) {
+        heroHost.textContent = message;
+      }
+      if (!heroMessages.has(message)) {
+        notices.push(message);
+        heroMessages.add(message);
+      }
+    }
+
+    const heroResult = await mountArt({
+      manifestPath: "./assets/art/manifest.json",
+      targetId: "hero-art",
+      statusElement: heroStatus,
+      onFallback: noteHeroFallback
+    });
+
+    if (!heroResult && heroHost && heroMessages.size === 0) {
+      noteHeroFallback("Hero art offline; octagram fallback on duty.");
+    }
 
     async function loadJSON(path) {
       // Offline assurance: avoid fetch when opened via file:// to honor the no-network brief.
@@ -46,7 +88,7 @@
       }
     }
 
-    function mergePalette(defaultPalette, overridePalette, notices) {
+    function mergePalette(defaultPalette, overridePalette, log) {
       const base = { ...defaultPalette, layers: [...defaultPalette.layers] };
       if (!overridePalette || typeof overridePalette !== "object") {
         return base;
@@ -55,13 +97,13 @@
       if (typeof overridePalette.bg === "string") {
         base.bg = overridePalette.bg;
       } else {
-        notices.push("Palette missing bg; using default.");
+        log.push("Palette missing bg; using default.");
       }
 
       if (typeof overridePalette.ink === "string") {
         base.ink = overridePalette.ink;
       } else {
-        notices.push("Palette missing ink; using default.");
+        log.push("Palette missing ink; using default.");
       }
 
       if (Array.isArray(overridePalette.layers)) {
@@ -69,11 +111,11 @@
           if (typeof overridePalette.layers[i] === "string") {
             base.layers[i] = overridePalette.layers[i];
           } else if (overridePalette.layers[i] !== undefined) {
-            notices.push("Palette layer " + (i + 1) + " invalid; using default.");
+            log.push("Palette layer " + (i + 1) + " invalid; using default.");
           }
         }
       } else {
-        notices.push("Palette layers missing; using defaults.");
+        log.push("Palette layers missing; using defaults.");
       }
 
       return base;
@@ -87,19 +129,18 @@
       }
     };
 
-    const notices = [];
-    const palette = await loadJSON("./data/palette.json");
-    const active = mergePalette(defaults.palette, palette, notices);
+    const paletteData = await loadJSON("./data/palette.json");
+    const activePalette = mergePalette(defaults.palette, paletteData, notices);
 
-    if (palette) {
-      elStatus.textContent = "Palette loaded.";
+    if (paletteData) {
+      paletteStatus.textContent = "Palette loaded.";
     } else {
-      elStatus.textContent = "Palette missing; using safe fallback.";
+      paletteStatus.textContent = "Palette missing; using safe fallback.";
       notices.push("Palette JSON not available; calm defaults engaged.");
     }
 
-    if (!ctx) {
-      elStatus.textContent = "2D canvas context unavailable.";
+    if (!stageCtx) {
+      paletteStatus.textContent = "2D canvas context unavailable.";
       notices.push("Canvas context unavailable; nothing rendered.");
       return;
     }
@@ -108,7 +149,7 @@
     const NUM = { THREE:3, SEVEN:7, NINE:9, ELEVEN:11, TWENTYTWO:22, THIRTYTHREE:33, NINETYNINE:99, ONEFORTYFOUR:144 };
 
     // ND-safe rationale: no motion, high readability, soft colors, layered order
-    renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:active, NUM, notices });
+    renderHelix(stageCtx, { width:stageCanvas.width, height:stageCanvas.height, palette:activePalette, NUM, notices });
   </script>
 </body>
 </html>

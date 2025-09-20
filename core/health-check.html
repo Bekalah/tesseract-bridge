@@ -1,14 +1,11 @@
-<!doctype html><meta charset="utf-8"><title>Health</title>
-<style>body{font:14px/1.4 ui-serif,Georgia,serif;padding:1rem}.ok{color:#0a0}.bad{color:#a00}</style>
-<ul id="r"></ul>
+<!doctype html><meta charset="utf-8"><title>Cathedral Health ✓</title>
+<style>body{font:14px ui-monospace,monospace;background:#0b0c10;color:#e6e6e6;padding:2rem}</style>
+<h1>Cathedral Health ✓</h1>
+<ul>
+  <li>Build: <script>document.write(new Date(document.lastModified).toISOString())</script></li>
+  <li>Auth: <span id="auth">none</span></li>
+</ul>
 <script>
-const tests = ["index.html"];
-Promise.allSettled(tests.map(t => fetch(t,{method:"HEAD"}))).then(rs=>{
-  const r=document.getElementById('r');
-  rs.forEach((x,i)=>{const li=document.createElement('li');
-    li.className = x.status==="fulfilled" && x.value.ok ? "ok" : "bad";
-    li.textContent = tests[i] + " → " + (x.status==="fulfilled"?x.value.status:x.reason);
-    r.appendChild(li);
-  });
-});
+  const gated = document.cookie.includes('nf_jwt') || !!window.netlifyIdentity;
+  if (gated) document.getElementById('auth').textContent = 'possible gate detected';
 </script>

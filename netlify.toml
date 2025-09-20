@@ -4,3 +4,4 @@
 
 [build.environment]
   GIT_LFS_ENABLED = "false"
+  GIT_LFS_SKIP_SMUDGE = "1"

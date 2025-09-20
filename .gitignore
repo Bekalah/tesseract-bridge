@@ -2,3 +2,5 @@
 Thumbs.db
 __pycache__/
 *.pyc
+# Guarded PNG masters (kept offline per anti-resurrection brief)
+assets/art/black-madonna-altar-1600.png
