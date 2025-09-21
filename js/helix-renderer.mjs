@@ -13,18 +13,40 @@
 */
 
 export function renderHelix(ctx, { width, height, palette, NUM, notices = [] }) {
+  const safePalette = normalizePalette(palette);
+
   // ND-safe background: calm tone, no flashing or gradients
   ctx.save();
-  ctx.fillStyle = palette.bg;
+  ctx.fillStyle = safePalette.bg;
   ctx.fillRect(0, 0, width, height);
 
   // Draw layered geometry back-to-front to preserve depth without animation
-  drawVesica(ctx, width, height, palette.layers[0], NUM);
-  drawTreeOfLife(ctx, width, height, palette.layers[1], palette.layers[2], NUM);
-  drawFibonacci(ctx, width, height, palette.layers[3], NUM);
-  drawHelix(ctx, width, height, palette.layers[4], palette.layers[5], NUM);
-  drawNotices(ctx, width, height, palette.ink, notices);
+  drawVesica(ctx, width, height, safePalette.layers[0], NUM);
+  drawTreeOfLife(ctx, width, height, safePalette.layers[1], safePalette.layers[2], NUM);
+  drawFibonacci(ctx, width, height, safePalette.layers[3], NUM);
+  drawHelix(ctx, width, height, safePalette.layers[4], safePalette.layers[5], NUM);
+  drawNotices(ctx, width, height, safePalette.ink, notices);
   ctx.restore();
+}
+
+function normalizePalette(palette) {
+  /*
+    Ensures every render uses calm, ND-safe colors even when the palette file is
+    missing or partially defined. Layers fall back in order without flashing.
+  */
+  const defaults = {
+    bg: "#0b0b12",
+    ink: "#e8e8f0",
+    layers: ["#b1c7ff", "#89f7fe", "#a0ffa1", "#ffd27f", "#f5a3ff", "#d0d0e6"]
+  };
+  const source = palette ?? {};
+  const incomingLayers = Array.isArray(source.layers) ? source.layers : [];
+  const layers = defaults.layers.map((fallback, index) => incomingLayers[index] ?? fallback);
+  return {
+    bg: source.bg ?? defaults.bg,
+    ink: source.ink ?? defaults.ink,
+    layers
+  };
 }
 
 // --- Layer 1: Vesica field -------------------------------------------------

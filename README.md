@@ -10,5 +10,11 @@ Central connector for the Cathedral of Circuits. It tracks IDs, manifests, and c
 1. Run `python3 core/check_ids.py --bridge .` to confirm IDs resolve inside the bridge registry.
 2. Review `docs/curation_checklist.md` prior to shipping any Tarot rooms or cards.
 3. Open `index.html` directly to confirm the ND-safe renderer still layers Vesica, Tree-of-Life, Fibonacci, and helix without network calls.
+4. Review `docs/fly-deployment.md` for the Fly.io handoff plan before any external publishing.
+
+## Fly.io Prep Notes
+- This repository no longer ships Netlify configuration; manual deploys use `flyctl deploy --config fly.toml` when ready.
+- All files remain static to keep parity between local double-click previews and the Fly runtime.
+- Update `fly.toml` with the final app name only from a local terminal; never commit secrets or workflow automation.
 
 Keep all updates offline-first, trauma-informed, and layered—never flatten the Cathedral geometry.
