@@ -143,6 +143,12 @@ ng>Cosmi    <div><strong>Cosmic Helix Renderer</strong> — layered sacred geome
 tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
   <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
   <p class="note">This static renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
+    <div><strong>Cosmic Helix Renderer</strong> - layered sacred geometry (offline, ND-safe)</div>
+    <div class="status" id="status">Loading palette...</div>
+  </header>
+
+  <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
+  <p class="note">This static renderer layers Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
 
   <script type="module">
     import { renderHelix } from "./js/helix-renderer.mjs";
@@ -223,6 +229,30 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
     };
 >>>>>>> main/codex/organize-project-directory-structure
 
+    async function loadPaletteModule(path) {
+      /*
+        Offline-first: JSON module import avoids network fetches.
+        Missing files or unsupported JSON modules fall back to defaults.
+      */
+      const result = {
+        palette: null,
+        statusText: "Palette missing; using safe fallback.",
+        notices: []
+      };
+      try {
+        const module = await import(path, { assert: { type: "json" } });
+        if (module && module.default && typeof module.default === "object") {
+          result.palette = module.default;
+          result.statusText = "Palette loaded.";
+        } else {
+          result.notices.push("Palette module invalid; calm defaults engaged.");
+        }
+      } catch (error) {
+        result.notices.push("Palette JSON unavailable or unsupported; calm defaults engaged.");
+      }
+      return result;
+    }
+
     const NUM = { THREE:3, SEVEN:7, NINE:9, ELEVEN:11, TWENTYTWO:22, THIRTYTHREE:33, NINETYNINE:99, ONEFORTYFOUR:144 };
 
     function mergePalette(defaultPalette, overridePalette, notices) {
@@ -230,6 +260,7 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
     function buildPalette(defaultPalette, overridePalette, notices) {
       const base = { ...defaultPalette, layers: [...defaultPalette.layers] };
       if (!overridePalette || typeof overridePalette !== "object") {
+        paletteNotices.push("Palette missing; defaults preserved.");
         return base;
       }
       if (typeof overridePalette.bg === "string") {
@@ -238,6 +269,8 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
         notices.push("Palette missing bg; using default.");
       } else if (overridePalette.bg !== undefined) {
         notices.push("Palette bg invalid; using default.");
+      } else if (overridePalette.bg !== undefined) {
+        paletteNotices.push("Palette bg invalid; using default.");
       }
       if (typeof overridePalette.ink === "string") {
         base.ink = overridePalette.ink;
@@ -245,6 +278,8 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
         notices.push("Palette missing ink; using default.");
       } else if (overridePalette.ink !== undefined) {
         notices.push("Palette ink invalid; using default.");
+      } else if (overridePalette.ink !== undefined) {
+        paletteNotices.push("Palette ink invalid; using default.");
       }
       if (Array.isArray(overridePalette.layers)) {
         for (let i = 0; i < base.layers.length; i += 1) {
@@ -258,6 +293,8 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
         notices.push("Palette layers missing; using defaults.");
       } else if (overridePalette.layers !== undefined) {
         notices.push("Palette layers invalid; using defaults.");
+      } else if (overridePalette.layers !== undefined) {
+        paletteNotices.push("Palette layers invalid; using defaults.");
       }
       return base;
     }
@@ -521,9 +558,54 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
       // ND-safe rationale: no motion, high readability, soft colors, layered order
       notices.push("Canvas context unavailable; geometry not rendered.");
     }
+    async function main() {
+      if (!canvas) {
+        if (elStatus) elStatus.textContent = "Canvas element missing.";
+        return;
+      }
 
-    // Numerology constants used by geometry routines
-    const NUM = { THREE:3, SEVEN:7, NINE:9, ELEVEN:11, TWENTYTWO:22, THIRTYTHREE:33, NINETYNINE:99, ONEFORTYFOUR:144 };
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        if (elStatus) elStatus.textContent = "2D canvas context unavailable.";
+        return;
+      }
+
+      const defaults = {
+        palette: {
+          bg:"#0b0b12",
+          ink:"#e8e8f0",
+          layers:["#b1c7ff","#89f7fe","#a0ffa1","#ffd27f","#f5a3ff","#d0d0e6"]
+        }
+      };
+
+      const loadResult = await loadPaletteModule("./data/palette.json");
+      const paletteNotices = [...loadResult.notices];
+      const activePalette = mergePalette(defaults.palette, loadResult.palette, paletteNotices);
+
+      if (elStatus) {
+        elStatus.textContent = loadResult.statusText;
+      }
+
+      const NUM = {
+        THREE:3,
+        SEVEN:7,
+        NINE:9,
+        ELEVEN:11,
+        TWENTYTWO:22,
+        THIRTYTHREE:33,
+        NINETYNINE:99,
+        ONEFORTYFOUR:144
+      };
+
+      // ND-safe rationale: no motion, high readability, layered depth maintained
+      renderHelix(ctx, {
+        width: canvas.width,
+        height: canvas.height,
+        palette: activePalette,
+        NUM,
+        notices: paletteNotices
+      });
+    }
 
     // ND-safe rationale: no motion, high readability, soft colors, layered order
     if (ctx) {
@@ -534,6 +616,7 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
       // ND-safe rationale: no motion, high readability, soft colors, layered order
       renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:active, NUM, notices });
     }
+    main();
   </script>
 </body>
 </html>
