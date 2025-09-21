@@ -3,10 +3,10 @@
   ND-safe static renderer for layered sacred geometry.
 
   Layers are rendered back-to-front without motion:
-    1) Vesica field – intersecting circle grid
-    2) Tree-of-Life scaffold – ten sephirot nodes with twenty-two paths
-    3) Fibonacci curve – static logarithmic spiral polyline
-    4) Double-helix lattice – two phase-shifted strands with crossbars
+    1) Vesica field - intersecting circle grid
+    2) Tree-of-Life scaffold - ten sephirot nodes with twenty-two paths
+    3) Fibonacci curve - static logarithmic spiral polyline
+    4) Double-helix lattice - two phase-shifted strands with crossbars
 
   Numerology constants (3, 7, 9, 11, 22, 33, 99, 144) guide proportions.
   Every routine is pure and receives the drawing context plus explicit data.
@@ -191,6 +191,10 @@ function strokeLine(ctx, ax, ay, bx, by) {
 
 // --- Notices layer ----------------------------------------------------------
 function drawNotices(ctx, w, h, textColor, notices) {
+  /*
+    Inline fallback notice panel keeps the user informed when data files are missing.
+    Panel stays static and muted to honor the ND-safe brief.
+  */
   if (!Array.isArray(notices) || notices.length === 0) {
     return;
   }

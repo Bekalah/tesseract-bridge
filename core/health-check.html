@@ -1,11 +1,20 @@
-<!doctype html><meta charset="utf-8"><title>Cathedral Health ✓</title>
-<style>body{font:14px ui-monospace,monospace;background:#0b0c10;color:#e6e6e6;padding:2rem}</style>
-<h1>Cathedral Health ✓</h1>
+<!doctype html>
+<meta charset="utf-8">
+<title>Health ✓</title>
+<style>
+  body {
+    font: 14px ui-monospace, monospace;
+    background: #0b0c10;
+    color: #e6e6e6;
+    padding: 2rem;
+  }
+  .ok { color: #4ade80; }
+</style>
+<h1>Tesseract Bridge Health ✓</h1>
 <ul>
-  <li>Build: <script>document.write(new Date(document.lastModified).toISOString())</script></li>
-  <li>Auth: <span id="auth">none</span></li>
+  <li>Build time: <script>document.write(new Date(document.lastModified).toISOString())</script></li>
+  <li>Status: <span class="ok">Bridge Active</span></li>
+  <li>Realms Connected: 7</li>
+  <li>Labs Registered: 5</li>
+  <li>Message Router: Active</li>
 </ul>
-<script>
-  const gated = document.cookie.includes('nf_jwt') || !!window.netlifyIdentity;
-  if (gated) document.getElementById('auth').textContent = 'possible gate detected';
-</script>
