@@ -116,6 +116,8 @@ ND safety and runs by simply opening `index.html`.
 ## Files
 >>>>>>>+main/codex/orga
 ex.html` – entry document that sets up the helix renderer and handles palette fallbacks.
+ry document that sets up the canvas and invokes the helix renderer.
+>>>>>>> main/codex/add-error-handling-for-sendmessage-method
 - `js/helix-renderer.mjs` – ES module with pure drawing routines for each layer.
 - `data/palette.json` – optional palette override; missing file triggers a safe fallback notice.
 Static, offline HTML + Canvas composition that layers the vesica field, Tree-of-Life scaffold, Fibonacci sweep, and a static double-helix lattice. The scene avoids motion and harsh contrast for ND safety and runs by simply opening `index.html`.
@@ -138,6 +140,7 @@ ND safety and runs by simply opening `index.html`.
 1. Keep all files in the same directory structure.
 2. Double-click `index.html` (no server or network required).
 <<<<<<< main
+<<<<<<< main
 3. The 3. The Integration Hub section reads `registry/notes/bridge_manifest.json` via JSON modules and renders one card per repo. Missing data produces a gentle inline notice and keeps the layout calm.
 4. A 1440x900 canvas renders, in order:
 >>>>>>>+main
@@ -151,6 +154,7 @@ ND safety and runs by simply opening `index.html`.
    - Static double-helix lattice
 <<<<<<< main
 4. If `4. If `data/palette.json` is absent, the header reports the fallback and a calm on-canvas notice is drawn while defaults are used.
+4. If `data/palette.json` is absent or malformed, the header reports the fallback and a calm inline notice is drawn on-canvas while defaults are used.
 
 When launched via `file://`, browsers often block local fetches. To respect the "no network" covenant, the loader skips fetches
 in that context and renders with the defaults plus the on-canvas notice. To preview custom palettes, either adjust the defaults
@@ -193,5 +197,9 @@ Edit the file to customize colors, or delete it to exercise the fallback notice.
 >>>>>>>+main
 /codex/organize-project-directory-structure
 - No animation or autoplay; static layering only.
+When launched via `file://`, browsers often block local fetches; the renderer therefore skips the request and displays the inline notice while using the defaults. To preview custom palettes, either adjust the defaults inside `index.html` or launch a temporary local server and open the same files there.
+
+## ND-safe choices
+- No animation or autoplay; only a single draw pass.
 - Calm contrast, layered order, and generous spacing for readability.
 - Geometry counts align with numerology constants `3, 7, 9, 11, 22, 33, 99, 144` to honor the cosmology brief.
