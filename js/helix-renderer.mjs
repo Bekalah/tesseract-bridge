@@ -11,6 +11,25 @@
   Numerology constants (3, 7, 9, 11, 22, 33, 99, 144) guide proportions.
   Every routine is pure: all state flows through parameters.
 */
+/**
+ * Render a static, ND-safe layered sacred-geometry composition onto a canvas.
+ *
+ * Renders four back-to-front layers (vesica field, Tree-of-Life scaffold, Fibonacci spiral,
+ * and double-helix lattice) and an optional inline notices panel, filling the background
+ * with a normalized, ND-safe palette. The function saves and restores the canvas state.
+ *
+ * @param {CanvasRenderingContext2D} ctx - Canvas 2D rendering context to draw into.
+ * @param {Object} options
+ * @param {number} options.width - Canvas drawing width in pixels.
+ * @param {number} options.height - Canvas drawing height in pixels.
+ * @param {Object} [options.palette] - Optional palette; missing or incomplete entries are
+ *   normalized to ND-safe defaults before rendering.
+ * @param {Object} options.NUM - Numerology constants (e.g., 3, 7, 9, 11, 22, 33, 99, 144)
+ *   that control proportions and segment counts used by the layers.
+ * @param {string[]} [options.notices=[]] - Optional array of notice strings rendered as
+ *   stacked informational panels; empty or non-array values are ignored.
+ * @returns {void}
+ */
 
 export const DEFAULT_PALETTE = Object.freeze({
   bg:"#0b0b12",
@@ -21,6 +40,7 @@ export const DEFAULT_PALETTE = Object.freeze({
 export function renderHelix(ctx, { width, height, palette, NUM, notices = [] }) {
   const safePalette = mergePalette(palette);
   const layerColors = safePalette.layers;
+  const safePalette = normalizePalette(palette);
 
   // ND-safe background: calm tone, no flashing or gradients
   ctx.save();
@@ -32,11 +52,56 @@ export function renderHelix(ctx, { width, height, palette, NUM, notices = [] }) 
   drawTreeOfLife(ctx, width, height, layerColors[1], layerColors[2], NUM);
   drawFibonacci(ctx, width, height, layerColors[3], NUM);
   drawHelix(ctx, width, height, layerColors[4], layerColors[5], NUM);
+  drawVesica(ctx, width, height, safePalette.layers[0], NUM);
+  drawTreeOfLife(ctx, width, height, safePalette.layers[1], safePalette.layers[2], NUM);
+  drawFibonacci(ctx, width, height, safePalette.layers[3], NUM);
+  drawHelix(ctx, width, height, safePalette.layers[4], safePalette.layers[5], NUM);
   drawNotices(ctx, width, height, safePalette.ink, notices);
   ctx.restore();
 }
 
-// --- Layer 1: Vesica field -------------------------------------------------
+/**
+ * Produce a normalized, ND-friendly palette ensuring a background color, ink color, and an array of six layer colors.
+ *
+ * If `palette` is missing or partially defined, missing fields are filled from built-in calm defaults. Incoming `palette.layers`
+ * values override defaults by index; any positions beyond the provided array are substituted with default layer colors so the
+ * returned `layers` array always has six entries.
+ *
+ * @param {Object|null|undefined} palette - Optional palette partial. May contain `bg` (string), `ink` (string), and `layers` (string[]).
+ * @return {{bg: string, ink: string, layers: string[]}} Normalized palette with `bg`, `ink`, and a six-element `layers` array.
+ */
+function normalizePalette(palette) {
+  /*
+    Ensures every render uses calm, ND-safe colors even when the palette file is
+    missing or partially defined. Layers fall back in order without flashing.
+  */
+  const defaults = {
+    bg: "#0b0b12",
+    ink: "#e8e8f0",
+    layers: ["#b1c7ff", "#89f7fe", "#a0ffa1", "#ffd27f", "#f5a3ff", "#d0d0e6"]
+  };
+  const source = palette ?? {};
+  const incomingLayers = Array.isArray(source.layers) ? source.layers : [];
+  const layers = defaults.layers.map((fallback, index) => incomingLayers[index] ?? fallback);
+  return {
+    bg: source.bg ?? defaults.bg,
+    ink: source.ink ?? defaults.ink,
+    layers
+  };
+}
+
+/**
+ * Render a vesica-style field of intersecting circles across the canvas.
+ *
+ * Draws a grid of NUM.NINE columns by NUM.SEVEN rows and places two horizontally
+ * offset circles per grid cell to create vesica/intersection shapes. Strokes
+ * the circles with the provided color and preserves the canvas state.
+ *
+ * @param {number} w - Canvas width in pixels.
+ * @param {number} h - Canvas height in pixels.
+ * @param {string} color - Stroke color used for the circle outlines.
+ * @param {object} NUM - Numeric constants object; expects NUM.NINE (columns)
+ *                      and NUM.SEVEN (rows) to determine the grid.
 function drawVesica(ctx, w, h, color, NUM) {
   /*
     Intersecting circle grid referencing 9 columns and 7 rows.
