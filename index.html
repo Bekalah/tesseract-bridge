@@ -61,6 +61,7 @@
       .constants-grid { padding:1.5rem; }
     }
     /* ND-safe: calm contrast, no motion, generous spacing */
+    /* ND-safe: calm contrast, no motion, layered spacing for readability */
     :root { --bg:#0b0b12; --ink:#e8e8f0; --muted:#a6a6c1; }
     html,body { margin:0; padding:0; background:var(--bg); color:var(--ink); font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
     header { padding:12px 16px; border-bottom:1px solid #1d1d2a; }
@@ -127,6 +128,12 @@
 
   <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
   <p class="note">This static renderer layers Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
+    <div><strong>Cosmic Helix Renderer</strong> — layered sacred geometry (offline, ND-safe)</div>
+    <div class="status" id="status">Loading palette…</div>
+  </header>
+
+  <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
+  <p class="note">This static renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
 
   <script type="module">
     import { renderHelix } from "./js/helix-renderer.mjs";
@@ -163,6 +170,18 @@
         title:"Stone Grimoire",
         site:"https://stone-grimoire.netlify.app",
         source:"https://github.com/yourusername/stone-grimoire"
+    async function loadPalette(path) {
+      if (typeof window !== "undefined" && window.location && window.location.protocol === "file:") {
+        return { data: null, reason: "file-protocol" };
+      }
+      try {
+        const res = await fetch(path, { cache: "no-store" });
+        if (!res.ok) {
+          return { data: null, reason: "http-" + res.status };
+        }
+        return { data: await res.json(), reason: "loaded" };
+      } catch (err) {
+        return { data: null, reason: "fetch-error" };
       }
     };
 
@@ -174,6 +193,13 @@
       ["draft","pending"],
       ["inactive","inactive"]
     ]);
+    const defaults = {
+      palette: {
+        bg:"#0b0b12",
+        ink:"#e8e8f0",
+        layers:["#b1c7ff","#89f7fe","#a0ffa1","#ffd27f","#f5a3ff","#d0d0e6"]
+      }
+    };
 
     const NUM = { THREE:3, SEVEN:7, NINE:9, ELEVEN:11, TWENTYTWO:22, THIRTYTHREE:33, NINETYNINE:99, ONEFORTYFOUR:144 };
 
@@ -313,6 +339,55 @@
       card.appendChild(features);
       card.appendChild(linksContainer);
       return card;
+    async function loadPaletteJSON(noticesList) {
+      /*
+        Offline assurance: honor the "no network" brief by avoiding fetch while
+        running as file://. When the palette cannot be reached the calm defaults
+        remain, and a notice will be rendered on-canvas.
+      */
+      const protocol = typeof window !== "undefined" && window.location ? window.location.protocol : null;
+      if (protocol === "file:") {
+        noticesList.push("Local file mode blocks palette fetch; calm defaults engaged.");
+        return null;
+      }
+      try {
+        const res = await fetch("./data/palette.json", { cache: "no-store" });
+        if (!res.ok) {
+          throw new Error(String(res.status));
+        }
+        return await res.json();
+      } catch (err) {
+        noticesList.push("Palette JSON unavailable (" + err.message + "); calm defaults engaged.");
+        return null;
+      }
+    }
+
+    const paletteNotices = [];
+    const paletteOverride = await loadPaletteJSON(paletteNotices);
+    const active = mergePalette(defaults.palette, paletteOverride, paletteNotices);
+
+    document.documentElement.style.setProperty("--bg", active.bg);
+    document.documentElement.style.setProperty("--ink", active.ink);
+
+    if (paletteOverride) {
+      elStatus.textContent = "Palette loaded.";
+    } else {
+      elStatus.textContent = "Palette fallback active.";
+    const paletteNotices = [];
+    const paletteResult = await loadPalette("./data/palette.json");
+    const active = mergePalette(defaults.palette, paletteResult.data, paletteNotices);
+
+    if (paletteResult.reason === "loaded") {
+      if (elStatus) elStatus.textContent = "Palette loaded.";
+    } else {
+      if (elStatus) elStatus.textContent = "Palette missing; using safe fallback.";
+      if (paletteResult.reason === "file-protocol") {
+        paletteNotices.push("Running from file:// so palette fetch is skipped. Calm defaults applied.");
+      } else if (paletteResult.reason && paletteResult.reason.startsWith("http-")) {
+        paletteNotices.push("Palette JSON responded with " + paletteResult.reason + "; calm defaults applied.");
+      } else if (paletteResult.reason === "fetch-error") {
+        paletteNotices.push("Palette JSON not available; calm defaults engaged.");
+      }
     }
 
     function populateRepoGrid(repos) {
@@ -384,13 +459,21 @@
 
     main();
     if (!ctx) {
-      if (elStatus) elStatus.textContent = "2D canvas context unavailable.";
+      elStatus.textContent = "2D canvas context unavailable.";
       notices.push("Canvas context unavailable; nothing rendered.");
     } else {
       // Numerology constants used by geometry routines
       const NUM = { THREE:3, SEVEN:7, NINE:9, ELEVEN:11, TWENTYTWO:22, THIRTYTHREE:33, NINETYNINE:99, ONEFORTYFOUR:144 };
 
       // ND-safe rationale: no motion, high readability, soft colors, layered order
+      notices.push("Canvas context unavailable; geometry not rendered.");
+    }
+
+    // Numerology constants used by geometry routines
+    const NUM = { THREE:3, SEVEN:7, NINE:9, ELEVEN:11, TWENTYTWO:22, THIRTYTHREE:33, NINETYNINE:99, ONEFORTYFOUR:144 };
+
+    // ND-safe rationale: no motion, high readability, soft colors, layered order
+    if (ctx) {
       renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:active, NUM, notices:[...notices, ...paletteNotices] });
     }
   </script>

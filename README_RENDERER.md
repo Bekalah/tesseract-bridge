@@ -6,6 +6,19 @@ Static, offline HTML + Canvas composition layering four sacred geometry systems 
 - `index.html` – main document with integration hub layout, manifest-driven repo cards, and the helix renderer canvas.
 - `js/helix-renderer.mjs` – ES module with pure drawing routines for each sacred geometry layer.
 - `data/palette.json` – optional palette override; missing file triggers a calm fallback notice.
+Static, offline HTML + Canvas composition layering four sacred geometry systems. The scene avoids motion and harsh contrast for
+ND safety and runs by simply opening `index.html`.
+
+## Files
+- `index.html` – entry document that sets up the helix renderer and handles palette fallbacks.
+- `js/helix-renderer.mjs` – ES module with pure drawing routines for each layer.
+- `data/palette.json` – optional palette override; missing file triggers a safe fallback notice.
+Static, offline HTML + Canvas composition that layers the vesica field, Tree-of-Life scaffold, Fibonacci sweep, and a static double-helix lattice. The scene avoids motion and harsh contrast for ND safety and runs by simply opening `index.html`.
+
+## Files
+- `index.html` – entry document that sets up the canvas, loads the palette, and calls the renderer.
+- `js/helix-renderer.mjs` – ES module with pure drawing routines for each layer plus fallback notice rendering.
+- `data/palette.json` – optional palette override; missing file triggers a calm fallback notice and defaults.
 - `README_RENDERER.md` – this usage guide.
 Static, offline HTML + Canvas composition layering four sacred geometry systems. The scene avoids motion and harsh contrast for
 ND safety and runs by simply opening `index.html`.
@@ -21,6 +34,7 @@ ND safety and runs by simply opening `index.html`.
 2. Double-click `index.html` (no server or network required).
 3. The Integration Hub section reads `registry/notes/bridge_manifest.json` via JSON modules and renders one card per repo. Missing data produces a gentle inline notice and keeps the layout calm.
 4. A 1440x900 canvas renders, in order:
+3. A 1440x900 canvas renders, in order:
    - Vesica field
 3. A 1440x900 canvas renders, in order:
    - Vesica field (interlocking circles)
@@ -32,6 +46,9 @@ ND safety and runs by simply opening `index.html`.
 When launched via `file://`, browsers often block local fetches. To respect the "no network" covenant, the loader skips fetches
 in that context and renders with the defaults plus the on-canvas notice. To preview custom palettes, either adjust the defaults
 inside `index.html` or launch a local server temporarily and open the same files there.
+4. If `data/palette.json` is absent, the header reports the fallback and a calm inline notice is drawn on-canvas while defaults
+are used.
+4. The header reports palette status. When the palette file is missing or blocked (common when opened via `file://`), a muted inline notice is drawn on the canvas while defaults are used.
 
 ## Palette
 `data/palette.json` structure:
@@ -55,6 +72,12 @@ Edit the file to customize colors, or delete it to exercise the fallback notice.
 - No animation or autoplay; only local JSON module reads.
 ## ND-safe choices
 - No animation or autoplay; only a single static canvas render.
+Edit the file to customize colors, or delete it to exercise the fallback notice. The renderer only fetches the palette when not running under `file://`; otherwise it applies the defaults immediately for offline safety.
+
+## ND-safe choices
+- No animation or autoplay; the canvas paints once on load.
 - Calm contrast, layered order, and generous spacing for readability.
 - Layer hierarchy (Vesica -> Tree -> Fibonacci -> Helix) keeps geometry multi-layered rather than flattened.
+- No animation or autoplay; static layering only.
+- Calm contrast, layered order, and generous spacing for readability.
 - Geometry counts align with numerology constants `3, 7, 9, 11, 22, 33, 99, 144` to honor the cosmology brief.
