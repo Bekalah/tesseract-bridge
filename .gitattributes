@@ -1,3 +1,4 @@
 # LFS filters removed; file intentionally left without filter entries.
 # PNG assets are tracked as regular files to prevent LFS smudging during builds.
+# (intentionally left blank; binary assets are not tracked via Git LFS)
 *.png -filter -diff -merge
