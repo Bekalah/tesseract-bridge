@@ -2,755 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Cathedral of Circuits · Integration Hub</title>
+  <title>Cosmic Helix Renderer (ND-safe, Offline)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <style>
-    /* ND-safe palette: calm contrast, layered depth, no motion */
-    :root {
-      --bg-primary:#0b0c10;
-      --bg-secondary:#1a1a2e;
-      --ink-primary:#e6e6e6;
-      --ink-secondary:#a9b1ba;
-      --accent-gold:#d4af37;
-      --border-color:#3a3a4a;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html,body { min-height:100vh; background:var(--bg-primary); color:var(--ink-primary); font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
-    header { text-align:center; padding:3rem 1rem 2rem; border-bottom:1px solid var(--border-color); background:linear-gradient(135deg,var(--bg-primary),var(--bg-secondary)); }
-    h1 { font-size:2.5rem; color:var(--accent-gold); text-shadow:0 0 20px rgba(212,175,55,0.3); letter-spacing:0.08em; margin-bottom:0.75rem; }
-    .subtitle { color:var(--ink-secondary); font-size:0.95rem; }
-    .status-bar { margin-top:1.5rem; display:flex; flex-wrap:wrap; justify-content:center; gap:1rem; color:var(--ink-secondary); font-size:0.85rem; }
-    main { max-width:1440px; margin:0 auto; padding:2.5rem 1.5rem 4rem; display:flex; flex-direction:column; gap:2.5rem; }
-    .constants-grid { display:flex; justify-content:space-around; flex-wrap:wrap; gap:2rem; padding:2rem; background:var(--bg-secondary); border-radius:10px; border:1px solid var(--border-color); }
-    .constant-item { text-align:center; }
-    .constant-number { display:block; font-size:2.1rem; font-weight:700; color:var(--accent-gold); }
-    .constant-label { margin-top:0.35rem; color:var(--ink-secondary); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.08em; }
-    .section-title { font-size:1.5rem; color:var(--accent-gold); margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.1em; }
-    .note { color:var(--ink-secondary); max-width:960px; margin:0 auto; font-size:0.95rem; line-height:1.6; }
-    .repo-section { display:flex; flex-direction:column; gap:1.2rem; }
-    .repo-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:1.6rem; }
-    .repo-card { background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:10px; padding:1.6rem; display:flex; flex-direction:column; gap:0.75rem; position:relative; overflow:hidden; }
-    .repo-card::before { content:""; position:absolute; top:0; left:0; right:0; height:3px; background:var(--accent-gold); transform:scaleX(0); transform-origin:left; transition:transform 0.3s ease; }
-    .repo-card:hover::before { transform:scaleX(1); }
-    .repo-title { font-size:1.3rem; color:var(--accent-gold); display:flex; align-items:center; gap:0.6rem; }
-    .repo-role { color:var(--ink-secondary); font-size:0.9rem; font-style:italic; }
-    .repo-features { list-style:none; display:flex; flex-direction:column; gap:0.4rem; color:var(--ink-secondary); font-size:0.95rem; }
-    .repo-features li { position:relative; padding-left:1.3rem; }
-    .repo-features li::before { content:"✦"; position:absolute; left:0; top:0; color:var(--accent-gold); }
-    .repo-sublist { margin-top:0.35rem; list-style:none; padding-left:1.1rem; display:flex; flex-direction:column; gap:0.25rem; font-size:0.85rem; color:var(--ink-secondary); }
-    .repo-sublist li::before { content:"–"; margin-right:0.35rem; color:var(--ink-secondary); }
-    .repo-links { display:flex; gap:0.8rem; flex-wrap:wrap; }
-    .repo-link { padding:0.45rem 1rem; border-radius:5px; border:1px solid var(--accent-gold); color:var(--accent-gold); text-decoration:none; font-size:0.9rem; transition:background 0.2s ease,color 0.2s ease; }
-    .repo-link:hover, .repo-link:focus { background:var(--accent-gold); color:var(--bg-primary); }
-    .status { display:inline-block; width:9px; height:9px; border-radius:50%; }
-    .status.active { background:#4ade80; }
-    .status.pending { background:#fbbf24; }
-    .status.inactive { background:#ef4444; }
-    .repo-fallback { text-align:center; color:var(--ink-secondary); font-size:0.9rem; }
-    .renderer { display:flex; flex-direction:column; gap:1rem; align-items:center; }
-    #stage { display:block; width:100%; max-width:1440px; height:auto; border:1px solid var(--border-color); box-shadow:0 0 0 1px rgba(0,0,0,0.3); }
-    .instructions { background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:10px; padding:2rem; display:flex; flex-direction:column; gap:1rem; }
-    .instructions ol { padding-left:1.4rem; color:var(--ink-secondary); display:flex; flex-direction:column; gap:0.55rem; }
-    code { background:#11111a; color:var(--accent-gold); padding:0.2rem 0.45rem; border-radius:4px; font-size:0.85rem; }
-    footer { text-align:center; padding:3rem 1rem 4rem; border-top:1px solid var(--border-color); color:var(--accent-gold); font-style:italic; line-height:1.6; font-size:1.1rem; }
-    @media (max-width:768px) {
-      header { padding:2.5rem 1rem; }
-      h1 { font-size:2.1rem; }
-      .status-bar { flex-direction:column; align-items:center; }
-      .constants-grid { padding:1.5rem; }
-    }
-    /* ND-safe: calm contrast, no motion, generous spacing */
-    /* ND-safe: calm contrast, no motion, layered spacing for readability */
+    /* ND-safe styling: calm contrast, generous spacing, no motion */
     :root { --bg:#0b0b12; --ink:#e8e8f0; --muted:#a6a6c1; }
-    html,body { margin:0; padding:0; background:var(--bg); color:var(--ink); font:14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    html,body { margin:0; padding:0; background:var(--bg); color:var(--ink); font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
     header { padding:12px 16px; border-bottom:1px solid #1d1d2a; }
-    .status-list { list-style:none; margin:8px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:12px; font-size:12px; color:var(--muted); }
-    .status-list li { margin:0; }
-    main { max-width:1200px; margin:0 auto; padding:16px; display:flex; flex-direction:column; gap:24px; }
-    #opus, #stage { display:block; margin:0 auto; box-shadow:0 0 0 1px #1d1d2a; }
-    #opus { max-width:100%; height:auto; }
-    #hero-art { min-height:24px; text-align:center; color:var(--muted); font-size:13px; }
-    #hero-art img { display:block; margin:0 auto; max-width:100%; height:auto; }
-    .note { max-width:900px; margin:0 auto 16px; color:var(--muted); }
+    header strong { letter-spacing:0.08em; text-transform:uppercase; }
+    .status { margin-top:6px; font-size:12px; color:var(--muted); }
+    main { max-width:1200px; margin:0 auto; padding:16px; display:flex; flex-direction:column; gap:20px; }
+    #stage { display:block; margin:0 auto; box-shadow:0 0 0 1px #1d1d2a; background:var(--bg); }
+    .note { max-width:900px; margin:0 auto 16px; color:var(--muted); font-size:13px; }
     code { background:#11111a; padding:2px 4px; border-radius:3px; }
   </style>
 </head>
 <body>
   <header>
-<<<<<    <h1>✦ Cathedral of Circuits ✦</h1>
-    <p class="subtitle">ND-safe · Provenance required · Layered geometry · Offline-first bridge</p>
-    <div class="status-bar" role="status" aria-live="polite">
-      <span id="status">Loading palette…</span>
-      <span id="manifest-status">Loading bridge manifest…</span>
-    </div>
+    <div><strong>Cosmic Helix Renderer</strong> - layered sacred geometry (offline, ND-safe)</div>
+    <div class="status" id="status" role="status" aria-live="polite">Preparing palette...</div>
   </header>
 
   <main>
-    <section class="constants-grid" aria-label="Sacred constants">
-      <div class="constant-item"><span class="constant-number">0-144</span><span class="constant-label">All combinations</span></div>
-      <div class="constant-item"><span class="constant-number">72</span><span class="constant-label">Angels</span></div>
-      <div class="constant-item"><span class="constant-number">72</span><span class="constant-label">Demons</span></div>
-      <div class="constant-item"><span class="constant-number">33</span><span class="constant-label">Spine chapters</span></div>
-      <div class="constant-item"><span class="constant-number">78</span><span class="constant-label">Tarot arcana</span></div>
-    </section>
-
-    <section class="repo-section" aria-labelledby="integration-hub-title">
-      <h2 id="integration-hub-title" class="section-title">Integration Hub</h2>
-      <p class="note">Cards below assemble directly from <code>registry/notes/bridge_manifest.json</code>. This keeps provenance intact, prevents hardcoded lists, and preserves layered context for every realm.</p>
-      <div id="repo-grid" class="repo-grid" aria-live="polite"></div>
-      <p id="repo-fallback" class="repo-fallback">Bridge manifest loading…</p>
-    </section>
-
-    <section class="renderer" aria-labelledby="renderer-title">
-      <h2 id="renderer-title" class="section-title">Cosmic Helix Renderer</h2>
-      <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
-      <p class="note">Offline canvas renders Vesica field, Tree-of-Life scaffold, Fibonacci curve, and static double-helix lattice. No animation, no autoplay. If supporting data go missing, the renderer annotates the canvas with a calm notice while staying ND-safe.</p>
-    </section>
-
-    <section class="instructions" aria-labelledby="protocol-title">
-      <h2 id="protocol-title" class="section-title">Deployment protocol</h2>
-      <ol>
-        <li>Clone each repository and align shared files from the blueprint archives.</li>
-        <li>Place master images in <code>assets/raw/</code> (PNG/JPG only).</li>
-        <li>Run <code>npm install</code> then <code>npm run build</code> for local confidence checks.</li>
-        <li>Deploy manually to Netlify with <code>netlify deploy --prod --build</code> (no automated workflows).</li>
-        <li>Disable image optimization in Netlify UI to keep layered geometry intact.</li>
-        <li>Update <code>registry/realm_links.json</code> with live endpoints once verified.</li>
-        <li>Confirm <code>/core/health-check.html</code> responds with 200 for each realm.</li>
-        <li>Add new nodes or combinations to <code>registry/nodes.json</code> respecting schema and numerology counts.</li>
-        <li>For content updates, bump <code>SW_VERSION</code> inside <code>public/sw.js</code> before shipping.</li>
-      </ol>
-    </section>
-  </main>
-
-  <footer>
-    "In sacred pattern, healing is found. In open spiral, truth may be chosen. In the Codex, all is remembered."
-  </footer>
-    <div><strong>Cosmic Helix Renderer</strong> - layered sacred geometry (offline, ND-safe)</div>
-    <div class="status" id="status">Loading palette...</div>
-  </header>
-
-  <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
-  <p class="note">This static renderer layers Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
-    <div><strong>Cosmic Helix Renderer</strong> — layered sacred geometry (offline, ND-safe)</div>
-    <div class="status" id="status">Loading palette…</div>
-  </header>
-
-  <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
->>>>>>>+main
-ng>Cosmi    <div><strong>Cosmic Helix Renderer</strong> — layered sacred geometry (offline, ND-safe)</div>
-    <div class="status" id="status">Loading palette…</div>
-  </header>
-
-  <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
->>>>>>>+main/codex/orga
-tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
-  <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
-  <p class="note">This static renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
-    <div><strong>Cosmic Helix Renderer</strong> - layered sacred geometry (offline, ND-safe)</div>
-    <div class="status" id="status">Loading palette...</div>
-  </header>
-
-  <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
-  <p class="note">This static renderer layers Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
-  <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
-    <div><strong>Cosmic Helix Renderer</strong> - layered sacred geometry (offline, ND-safe)</div>
-    <div class="status" id="status">Loading palette...</div>
-    <ul class="status-list">
-      <li id="status">Loading palette...</li>
-      <li id="hero-status">Preparing hero art fallback...</li>
-    </ul>
-  </header>
-
-  <main>
-    <canvas id="opus" width="1200" height="675" aria-label="Opalescent octagram field"></canvas>
-    <div id="hero-art" aria-live="polite">Hero art pending.</div>
     <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
-    <p class="note">This static renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
+    <p class="note">This static renderer layers a Vesica field, Tree-of-Life scaffold, Fibonacci curve, and static double-helix lattice. No animation, no autoplay, no remote dependencies. Open this file directly for an offline render.</p>
   </main>
 
   <script type="module">
-    import { renderHelix } from "./js/helix-renderer.mjs";
-    import { paintOctagram } from "./assets/js/first-paint-octagram.js";
-    import { mountArt } from "./assets/js/art-loader.js";
+    import { renderHelix, DEFAULT_PALETTE } from "./js/helix-renderer.mjs";
 
-    const paletteStatus = document.getElementById("status");
-    const manifestStatus = document.getElementById("manifest-status");
-    const repoGrid = document.getElementById("repo-grid");
-    const repoFallback = document.getElementById("repo-fallback");
+    const statusEl = document.getElementById("status");
     const canvas = document.getElementById("stage");
     const ctx = canvas.getContext("2d");
-    const heroStatus = document.getElementById("hero-status");
-    const heroHost = document.getElementById("hero-art");
-    const stageCanvas = document.getElementById("stage");
-    const stageCtx = stageCanvas.getContext("2d");
 
-    paintOctagram();
-
-    const notices = [];
-    const heroMessages = new Set();
-
-    function noteHeroFallback(message) {
-      if (heroHost) {
-        heroHost.textContent = message;
-      }
-      if (!heroMessages.has(message)) {
-        notices.push(message);
-        heroMessages.add(message);
-      }
-    }
-
-    const heroResult = await mountArt({
-      manifestPath: "./assets/art/manifest.json",
-      targetId: "hero-art",
-      statusElement: heroStatus,
-      onFallback: noteHeroFallback
-    });
-
-    if (!heroResult && heroHost && heroMessages.size === 0) {
-      noteHeroFallback("Hero art offline; octagram fallback on duty.");
-    }
-
-    const defaults = {
-      palette: {
-        bg:"#0b0b12",
-        ink:"#e8e8f0",
-        layers:["#b1c7ff","#89f7fe","#a0ffa1","#ffd27f","#f5a3ff","#d0d0e6"]
-    const elStatus = document.getElementById("status");
-    const canvas = document.getElementById("stage");
-    const ctx = canvas ? canvas.getContext("2d") : null;
-    const notices = [];
-
-    async fun    async function loadJSON(path) {
-      /*
-        Offline covenant: skip fetch when opened via file:// so no network requests fire.
-        When served over http(s) the fetch stays local and still honors the no-dependency rule.
-      */
-      if (typeof window === "undefined" || !window.fetch || (window.location && window.location.protocol === "file:")) {
-
-    async function loadJSON(path) {
-      // ND-safe guard: avoid network requests when opened via file://
-    async function loadJSON(path) {
-      // Offline assurance: skip fetch entirely when opened via file:// to avoid blocked network calls.
-    async function loadPalette(path, noticeList) {
-      if (typeof window !== "undefined" && window.location && window.location.protocol === "file:") {
-        if (Array.isArray(noticeList)) noticeList.push("Palette fetch skipped for file:// launch; calm defaults engaged.");
-        return null;
-      }
-    };
-
-    const REPO_OVERRIDES = {
-      "stone-cathedral": {
-        title:"Stone Grimoire",
-        site:"https://stone-grimoire.netlify.app",
-        source:"https://github.com/yourusername/stone-grimoire"
-    async function loadPalette(path) {
-      if (typeof window !== "undefined" && window.location && window.location.protocol === "file:") {
-        return { data: null, reason: "file-protocol" };
-      }
-      try {
-        const res = await fetch(path, { cache: "no-store" });
-        if (!res.ok) {
-          return { data: null, reason: "http-" + res.status };
-        }
-        return { data: await res.json(), reason: "loaded" };
-      } catch (err) {
-        return { data: null, reason: "fetch-error" };
-          if (Array.isArray(noticeList)) noticeList.push("Palette fetch returned status " + res.status + "; using defaults.");
-          return null;
-        }
-        return await res.json();
-      } catch (err) {
-        if (Array.isArray(noticeList)) noticeList.push("Palette fetch failed; using defaults.");
-        return null;
-      }
-    };
-
-    const STATUS_CLASS = new Map([
-      ["source-of-truth","active"],
-      ["active","active"],
-      ["reference","active"],
-      ["pending-merge","pending"],
-      ["draft","pending"],
-      ["inactive","inactive"]
-    ]);
-    const defaults = {
-      palette: {
-        bg:"#0b0b12",
-        ink:"#e8e8f0",
-        layers:["#b1c7ff","#89f7fe","#a0ffa1","#ffd27f","#f5a3ff","#d0d0e6"]
-      }
-    };
->>>>>>>+main
- = {
-      palette: {
-        bg:"#0b0b12",
-        ink:"#e8e8f0",
-        layers:["#b1c7ff","#89f7fe","#a0ffa1","#ffd27f","#f5a3ff","#d0d0e6"]
-      }
-    };
->>>>>>> main/codex/organize-project-directory-structure
-
-    async function loadPaletteModule(path) {
-      /*
-        Offline-first: JSON module import avoids network fetches.
-        Missing files or unsupported JSON modules fall back to defaults.
-      */
-      const result = {
-        palette: null,
-        statusText: "Palette missing; using safe fallback.",
-        notices: []
-      };
-      try {
-        const module = await import(path, { assert: { type: "json" } });
-        if (module && module.default && typeof module.default === "object") {
-          result.palette = module.default;
-          result.statusText = "Palette loaded.";
-        } else {
-          result.notices.push("Palette module invalid; calm defaults engaged.");
-        }
-      } catch (error) {
-        result.notices.push("Palette JSON unavailable or unsupported; calm defaults engaged.");
-      }
-      return result;
-    }
-
-    const NUM = { THREE:3, SEVEN:7, NINE:9, ELEVEN:11, TWENTYTWO:22, THIRTYTHREE:33, NINETYNINE:99, ONEFORTYFOUR:144 };
-
-    function mergePalette(defaultPalette, overridePalette, notices) {
-      const base = { ...defaultPalette, layers:[...defaultPalette.layers] };
-    function buildPalette(defaultPalette, overridePalette, notices) {
-      const base = { ...defaultPalette, layers: [...defaultPalette.layers] };
-      if (!overridePalette || typeof overridePalette !== "object") {
-        paletteNotices.push("Palette missing; defaults preserved.");
-    function sanitizePalette(defaultPalette, overridePalette, paletteNotices) {
-      // Pure function: clones defaults, applies overrides when valid, records calm notices otherwise.
-    function mergePalette(defaultPalette, overridePalette, noticeList) {
-    function mergePalette(defaultPalette, overridePalette, log) {
-      const base = { ...defaultPalette, layers: [...defaultPalette.layers] };
-      if (!overridePalette || typeof overridePalette !== "object") {
-        if (overridePalette !== null && overridePalette !== undefined) {
-          paletteNotices.push("Palette object invalid; defaults retained.");
-        }
-        return base;
-      }
-      if (typeof overridePalette.bg === "string") {
-        base.bg = overridePalette.bg;
-      } else {
-        notices.push("Palette missing bg; using default.");
-      } else if (overridePalette.bg !== undefined) {
-        notices.push("Palette bg invalid; using default.");
-      } else if (overridePalette.bg !== undefined) {
-        paletteNotices.push("Palette bg invalid; using default.");
-      } else if (overridePalette.bg !== undefined) {
-        paletteNotices.push("Palette bg invalid; default shade kept.");
-      } else if (overridePalette.bg !== undefined) {
-        if (Array.isArray(noticeList)) noticeList.push("Palette bg invalid; default retained.");
-        log.push("Palette missing bg; using default.");
-      }
-      if (typeof overridePalette.ink === "string") {
-        base.ink = overridePalette.ink;
-      } else {
-        notices.push("Palette missing ink; using default.");
-      } else if (overridePalette.ink !== undefined) {
-        notices.push("Palette ink invalid; using default.");
-      } else if (overridePalette.ink !== undefined) {
-        paletteNotices.push("Palette ink invalid; using default.");
-      } else if (overridePalette.ink !== undefined) {
-        paletteNotices.push("Palette ink invalid; default ink kept.");
-      } else if (overridePalette.ink !== undefined) {
-        if (Array.isArray(noticeList)) noticeList.push("Palette ink invalid; default retained.");
-        log.push("Palette missing ink; using default.");
-      }
-      if (Array.isArray(overridePalette.layers)) {
-        for (let i = 0; i < base.layers.length; i += 1) {
-          if (typeof overridePalette.layers[i] === "string") {
-            base.layers[i] = overridePalette.layers[i];
-          } else if (overridePalette.layers[i] !== undefined) {
-            log.push("Palette layer " + (i + 1) + " invalid; using default.");
-          }
-        }
-      } else {
-        notices.push("Palette layers missing; using defaults.");
-      } else if (overridePalette.layers !== undefined) {
-        notices.push("Palette layers invalid; using defaults.");
-      } else if (overridePalette.layers !== undefined) {
-        paletteNotices.push("Palette layers invalid; using defaults.");
-            paletteNotices.push("Palette layer " + (i + 1) + " invalid; default used.");
-          }
-        }
-      } else if (overridePalette.layers !== undefined) {
-        paletteNotices.push("Palette layers invalid; defaults used.");
-            if (Array.isArray(noticeList)) noticeList.push("Palette layer " + (i + 1) + " invalid; default retained.");
-          }
-        }
-      } else if (overridePalette.layers !== undefined) {
-        if (Array.isArray(noticeList)) noticeList.push("Palette layers invalid; defaults retained.");
-        log.push("Palette layers missing; using defaults.");
-      }
-      return base;
-    }
-
-    function formatTitle(repoId) {
-      const override = REPO_OVERRIDES[repoId];
-      if (override && override.title) {
-        return override.title;
-      }
-      const pretty = repoId
-        .replace(/-/g, " ")
-        .replace(/([a-zA-Z])(\d)/g, "$1 $2");
-      return pretty.split(" ").filter(Boolean).map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1)).join(" ");
-    }
-
-    function resolveLink(repoId, type) {
-      const override = REPO_OVERRIDES[repoId];
-      if (override && override[type]) {
-        return override[type];
-      }
-      if (type === "site") {
-        return "https://" + repoId + ".netlify.app";
-      }
-      return "https://github.com/yourusername/" + repoId;
-    }
-
-    function statusClass(status) {
-      return STATUS_CLASS.get(status) || "pending";
-    }
-
-    function formatList(values) {
-      if (!Array.isArray(values) || values.length === 0) {
-        return "None recorded";
-      }
-      return values.join(", ");
-    }
-
-    function createNextActionsList(nextActions) {
-      const sublist = document.createElement("ul");
-      sublist.className = "repo-sublist";
-      nextActions.forEach((action) => {
-        const item = document.createElement("li");
-        item.textContent = action;
-        sublist.appendChild(item);
-      });
-      return sublist;
-    }
-
-    function createRepoCard(repo) {
-      const card = document.createElement("article");
-      card.className = "repo-card";
-
-      const title = document.createElement("h3");
-      title.className = "repo-title";
-      title.textContent = formatTitle(repo.id);
-      const statusDot = document.createElement("span");
-      statusDot.className = "status " + statusClass(repo.status);
-      statusDot.title = repo.status;
-      title.appendChild(statusDot);
-
-      const role = document.createElement("p");
-      role.className = "repo-role";
-      role.textContent = repo.role || "Role undocumented";
-
-      const features = document.createElement("ul");
-      features.className = "repo-features";
-      const linkedIds = document.createElement("li");
-      linkedIds.textContent = "Linked IDs: " + formatList(repo.linked_ids);
-      features.appendChild(linkedIds);
-
-      if (Array.isArray(repo.bridges) && repo.bridges.length > 0) {
-        repo.bridges.forEach((bridge) => {
-          const focus = Array.isArray(bridge.focus) ? bridge.focus.join(", ") : "Focus pending";
-          const bridgeItem = document.createElement("li");
-          bridgeItem.textContent = "Bridge → " + formatTitle(bridge.id) + ": " + focus;
-          if (Array.isArray(bridge.next_actions) && bridge.next_actions.length > 0) {
-            bridgeItem.appendChild(createNextActionsList(bridge.next_actions));
-          }
-          features.appendChild(bridgeItem);
-        });
-      }
-
-      if (repo.notes) {
-        const noteItem = document.createElement("li");
-        noteItem.textContent = repo.notes;
-        features.appendChild(noteItem);
-      }
-
-      const linksContainer = document.createElement("div");
-      linksContainer.className = "repo-links";
-      const siteLink = document.createElement("a");
-      siteLink.className = "repo-link";
-      siteLink.href = resolveLink(repo.id, "site");
-      siteLink.target = "_blank";
-      siteLink.rel = "noopener noreferrer";
-      siteLink.textContent = "Visit site";
-      linksContainer.appendChild(siteLink);
-
-      const repoLink = document.createElement("a");
-      repoLink.className = "repo-link";
-      repoLink.href = resolveLink(repo.id, "source");
-      repoLink.target = "_blank";
-      repoLink.rel = "noopener noreferrer";
-      repoLink.textContent = "GitHub";
-      linksContainer.appendChild(repoLink);
-
-      card.appendChild(title);
-      card.appendChild(role);
-      card.appendChild(features);
-      card.appendChild(linksContainer);
-      return card;
-    async function loadPaletteJSON(noticesList) {
-      /*
-        Offline assurance: honor the "no network" brief by avoiding fetch while
-        running as file://. When the palette cannot be reached the calm defaults
-        remain, and a notice will be rendered on-canvas.
-      */
-      const protocol = typeof window !== "undefined" && window.location ? window.location.protocol : null;
-      if (protocol === "file:") {
-        noticesList.push("Local file mode blocks palette fetch; calm defaults engaged.");
-        return null;
-      }
-    async function loadPaletteJSON(noticesList) {
-      /*
-        Offline assurance: honor the "no network" brief by avoiding fetch while
-        running as file://. When the palette cannot be reached the calm defaults
-        remain, and a notice will be rendered on-canvas.
-      */
-      const protocol = typeof window !== "undefined" && window.location ? window.location.protocol : null;
-      if (protocol === "file:") {
-        noticesList.push("Local file mode blocks palette fetch; calm defaults engaged.");
-        return null;
-      }
-      try {
-        const res = await fetch("./data/palette.json", { cache: "no-store" });
-        if (!res.ok) {
-          throw new Error(String(res.status));
-        }
-        return await res.json();
-      } catch (err) {
-        noticesList.push("Palette JSON unavailable (" + err.message + "); calm defaults engaged.");
-        return null;
-      }
-    }
-
-<<<<<<< main
-    const paletteNotices = [];
-    const paletteOverride = await loadPaletteJSON(paletteNotices);
-    const active = mergePalette(defaults.palette, paletteOverride, paletteNotices);
-
-    document.documentElement.style.setProperty("--bg", active.bg);
-    document.documentElement.style.setProperty("--ink", active.ink);
-
-    if (paletteOverride) {
-      elStatus.textContent = "Palette loaded.";
-    } else {
-      elStatus.textContent = "Palette fallback active.";
-    const paletteNotices = [];
-    const paletteResult = await loadPalette("./data/palette.json");
-    const active = mergePalette(defaults.palette, paletteResult.data, paletteNotices);
-
-    if (paletteResult.reason === "loaded") {
-      if (elStatus) elStatus.textContent = "Palette loaded.";
-    } else {
-      if (elStatus) elStatus.textContent = "Palette missing; using safe fallback.";
-      if (paletteResult.reason === "file-protocol") {
-        paletteNotices.push("Running from file:// so palette fetch is skipped. Calm defaults applied.");
-      } else if (paletteResult.reason && paletteResult.reason.startsWith("http-")) {
-        paletteNotices.push("Palette JSON responded with " + paletteResult.reason + "; calm defaults applied.");
-      } else if (paletteResult.reason === "fetch-error") {
-        paletteNotices.push("Palette JSON not available; calm defaults engaged.");
-      }
-    }
-
-    function populateRepoGrid(repos) {
-      repoGrid.innerHTML = "";
-      if (!Array.isArray(repos) || repos.length === 0) {
-        repoFallback.textContent = "Bridge manifest contained no repos; add entries to registry/notes/bridge_manifest.json.";
-        return;
-      }
-      repos.forEach((repo) => {
-        repoGrid.appendChild(createRepoCard(repo));
-      });
-      repoFallback.textContent = "";
-    }
-
-    async function loadPalette() {
-      const notices = [];
-      try {
-        const module = await import("./data/palette.json", { assert:{ type:"json" } });
-        if (paletteStatus) {
-          paletteStatus.textContent = "Palette loaded.";
-        }
-        return { palette: module.default, notices };
-      } catch (error) {
-        notices.push("Palette JSON not available; calm defaults engaged.");
-        if (paletteStatus) {
-          paletteStatus.textContent = "Palette missing; using safe fallback.";
-        }
-        return { palette: null, notices };
-      }
-    }
-
-    async function loadManifest() {
-      try {
-        const module = await import("./registry/notes/bridge_manifest.json", { assert:{ type:"json" } });
-        const manifest = module.default;
-        if (manifestStatus) {
-          const stamp = manifest.last_updated ? "Last updated " + manifest.last_updated : "Bridge manifest loaded.";
-          manifestStatus.textContent = stamp;
-        }
-        populateRepoGrid(manifest.repos);
-        return [];
-      } catch (error) {
-        const message = "Bridge manifest missing; hub cards in fallback mode.";
-        if (manifestStatus) {
-          manifestStatus.textContent = message;
-        }
-        repoFallback.textContent = message + " Update registry/notes/bridge_manifest.json to restore details.";
-        return [message];
-      }
-    const notices = [];
-    const palette = await loadJSON("./data/palette.json");
-    const active = buildPalette(defaults.palette, palette, notices);
-    if (palette) {
-      elStatus.textContent = "Palette loaded.";
-    } else {
-      elStatus.textContent = "Palette missing; using safe fallback.";
-      notices.push("Palette JSON unavailable; calm defaults engaged.");
-    const paletteData = await loadPalette("./data/palette.json", notices);
-    const active = mergePalette(defaults.palette, paletteData, notices);
-
-    if (paletteData) {
-      if (elStatus) elStatus.textContent = "Palette loaded.";
-    } else {
-      if (elStatus) elStatus.textContent = "Palette missing; using safe fallback.";
-      notices.push("Palette JSON not available; calm defaults engaged.");
-    }
-
-    async function main() {
-      const notices = [];
-      const paletteResult = await loadPalette();
-      const palette = mergePalette(defaults.palette, paletteResult.palette, paletteResult.notices);
-      notices.push(...paletteResult.notices);
-      const manifestNotices = await loadManifest();
-      notices.push(...manifestNotices);
-
-      if (!ctx) {
-        if (paletteStatus) {
-          paletteStatus.textContent = "2D canvas context unavailable.";
-        }
-        return;
-      }
-
-      renderHelix(ctx, { width:canvas.width, height:canvas.height, palette, NUM, notices });
-    } else {
-      elStatus.textContent = "Palette fallback active.";
-    const palette = await loadJSON("./data/palette.json");
-    const paletteNotices = [];
-    const active = sanitizePalette(defaults.palette, palette, paletteNotices);
-
-    if (palette && paletteNotices.length === 0) {
-      elStatus.textContent = "Palette loaded.";
-    } else if (palette && paletteNotices.length > 0) {
-      elStatus.textContent = "Palette adjusted; see notice.";
-      notices.push(...paletteNotices);
-    } else {
-      elStatus.textContent = "Palette missing; using safe fallback.";
-      if (paletteNotices.length > 0) {
-        notices.push(...paletteNotices);
-      }
-      notices.push("Palette JSON not available; calm defaults engaged.");
-    }
-
-    main();
     if (!ctx) {
-      elStatus.textContent = "2D canvas context unavailable.";
-      elStatus.textContent = "2D context unavailable.";
-    const paletteData = await loadJSON("./data/palette.json");
-    const activePalette = mergePalette(defaults.palette, paletteData, notices);
-
-    if (paletteData) {
-      paletteStatus.textContent = "Palette loaded.";
+      statusEl.textContent = "Canvas not supported; geometry unavailable.";
     } else {
-      paletteStatus.textContent = "Palette missing; using safe fallback.";
-      notices.push("Palette JSON not available; calm defaults engaged.");
-    }
+      const NUM = Object.freeze({ THREE:3, SEVEN:7, NINE:9, ELEVEN:11, TWENTYTWO:22, THIRTYTHREE:33, NINETYNINE:99, ONEFORTYFOUR:144 });
+      const notices = [];
 
-    if (!stageCtx) {
-      paletteStatus.textContent = "2D canvas context unavailable.";
-      notices.push("Canvas context unavailable; nothing rendered.");
-    } else {
-      // Numerology constants used by geometry routines
-      const NUM = { THREE:3, SEVEN:7, NINE:9, ELEVEN:11, TWENTYTWO:22, THIRTYTHREE:33, NINETYNINE:99, ONEFORTYFOUR:144 };
-
-      // ND-safe rationale: no motion, high readability, soft colors, layered order
-      notices.push("Canvas context unavailable; geometry not rendered.");
-    }
-    async function main() {
-      if (!canvas) {
-        if (elStatus) elStatus.textContent = "Canvas element missing.";
-        return;
+      const { palette, status, notice } = await loadPalette("./data/palette.json");
+      statusEl.textContent = status;
+      if (notice) {
+        notices.push(notice);
       }
 
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        if (elStatus) elStatus.textContent = "2D canvas context unavailable.";
-        return;
+      const activePalette = palette ?? DEFAULT_PALETTE;
+      renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:activePalette, NUM, notices });
+    }
+
+    /*
+      loadPalette attempts to read ./data/palette.json without leaving offline scope.
+      ND-safe rationale: failing to reach the file should never flash; we return calm status text
+      and ask the renderer to paint a muted inline notice instead.
+    */
+    async function loadPalette(path) {
+      const isFileProtocol = typeof window !== "undefined" && window.location && window.location.protocol === "file:";
+      const fallback = {
+        palette:null,
+        status: isFileProtocol ? "Palette blocked under file://; using fallback colors." : "Palette missing; using fallback colors.",
+        notice: isFileProtocol ? "Palette JSON blocked by file:// security; ND-safe defaults applied." : "Palette JSON unavailable; ND-safe defaults applied."
+      };
+
+      // When fetch is unavailable (very old browsers), fall back immediately.
+      if (typeof fetch !== "function") {
+        return fallback;
       }
 
-      const defaults = {
-        palette: {
-          bg:"#0b0b12",
-          ink:"#e8e8f0",
-          layers:["#b1c7ff","#89f7fe","#a0ffa1","#ffd27f","#f5a3ff","#d0d0e6"]
+      try {
+        // file:// fetches often fail silently; this still respects the offline covenant because
+        // the request never leaves the local machine.
+        const res = await fetch(path, { cache:"no-store" });
+        if (!res.ok) {
+          return fallback;
         }
-      };
-
-      const loadResult = await loadPaletteModule("./data/palette.json");
-      const paletteNotices = [...loadResult.notices];
-      const activePalette = mergePalette(defaults.palette, loadResult.palette, paletteNotices);
-
-      if (elStatus) {
-        elStatus.textContent = loadResult.statusText;
+        const data = await res.json();
+        return {
+          palette:data,
+          status:"Palette loaded.",
+          notice:null
+        };
+      } catch (err) {
+        // Common when opened via file:// due to browser security; we fall back calmly.
+        return fallback;
       }
-
-      const NUM = {
-        THREE:3,
-        SEVEN:7,
-        NINE:9,
-        ELEVEN:11,
-        TWENTYTWO:22,
-        THIRTYTHREE:33,
-        NINETYNINE:99,
-        ONEFORTYFOUR:144
-      };
-
-      // ND-safe rationale: no motion, high readability, layered depth maintained
-      renderHelix(ctx, {
-        width: canvas.width,
-        height: canvas.height,
-        palette: activePalette,
-        NUM,
-        notices: paletteNotices
-      });
     }
-
-    // ND-safe rationale: no motion, high readability, soft colors, layered order
-    if (ctx) {
-
-      // ND-safe rationale: no motion, high readability, soft colors, layered order
-      renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:active, NUM, notices:[...notices, ...paletteNotices] });
-
-      // ND-safe rationale: no motion, high readability, soft colors, layered order
-      renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:active, NUM, notices });
-    }
-    main();
-    renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:active, NUM, notices });
-
-      // ND-safe rationale: no motion, high readability, soft colors, layered order
-      renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:active, NUM, notices });
-    }
-    renderHelix(stageCtx, { width:stageCanvas.width, height:stageCanvas.height, palette:activePalette, NUM, notices });
   </script>
 </body>
 </html>
