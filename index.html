@@ -150,6 +150,11 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
   <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
   <p class="note">This static renderer layers Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
   <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
+    <div><strong>Cosmic Helix Renderer</strong> - layered sacred geometry (offline, ND-safe)</div>
+    <div class="status" id="status">Loading palette...</div>
+  </header>
+
+  <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
   <p class="note">This static renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
 
   <script type="module">
@@ -169,7 +174,7 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
         layers:["#b1c7ff","#89f7fe","#a0ffa1","#ffd27f","#f5a3ff","#d0d0e6"]
     const elStatus = document.getElementById("status");
     const canvas = document.getElementById("stage");
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas ? canvas.getContext("2d") : null;
     const notices = [];
 
     async fun    async function loadJSON(path) {
@@ -183,7 +188,9 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
       // ND-safe guard: avoid network requests when opened via file://
     async function loadJSON(path) {
       // Offline assurance: skip fetch entirely when opened via file:// to avoid blocked network calls.
+    async function loadPalette(path, noticeList) {
       if (typeof window !== "undefined" && window.location && window.location.protocol === "file:") {
+        if (Array.isArray(noticeList)) noticeList.push("Palette fetch skipped for file:// launch; calm defaults engaged.");
         return null;
       }
     };
@@ -205,6 +212,13 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
         return { data: await res.json(), reason: "loaded" };
       } catch (err) {
         return { data: null, reason: "fetch-error" };
+          if (Array.isArray(noticeList)) noticeList.push("Palette fetch returned status " + res.status + "; using defaults.");
+          return null;
+        }
+        return await res.json();
+      } catch (err) {
+        if (Array.isArray(noticeList)) noticeList.push("Palette fetch failed; using defaults.");
+        return null;
       }
     };
 
@@ -267,6 +281,7 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
         paletteNotices.push("Palette missing; defaults preserved.");
     function sanitizePalette(defaultPalette, overridePalette, paletteNotices) {
       // Pure function: clones defaults, applies overrides when valid, records calm notices otherwise.
+    function mergePalette(defaultPalette, overridePalette, noticeList) {
       const base = { ...defaultPalette, layers: [...defaultPalette.layers] };
       if (!overridePalette || typeof overridePalette !== "object") {
         if (overridePalette !== null && overridePalette !== undefined) {
@@ -284,6 +299,8 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
         paletteNotices.push("Palette bg invalid; using default.");
       } else if (overridePalette.bg !== undefined) {
         paletteNotices.push("Palette bg invalid; default shade kept.");
+      } else if (overridePalette.bg !== undefined) {
+        if (Array.isArray(noticeList)) noticeList.push("Palette bg invalid; default retained.");
       }
       if (typeof overridePalette.ink === "string") {
         base.ink = overridePalette.ink;
@@ -295,6 +312,8 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
         paletteNotices.push("Palette ink invalid; using default.");
       } else if (overridePalette.ink !== undefined) {
         paletteNotices.push("Palette ink invalid; default ink kept.");
+      } else if (overridePalette.ink !== undefined) {
+        if (Array.isArray(noticeList)) noticeList.push("Palette ink invalid; default retained.");
       }
       if (Array.isArray(overridePalette.layers)) {
         for (let i = 0; i < base.layers.length; i += 1) {
@@ -315,6 +334,11 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
         }
       } else if (overridePalette.layers !== undefined) {
         paletteNotices.push("Palette layers invalid; defaults used.");
+            if (Array.isArray(noticeList)) noticeList.push("Palette layer " + (i + 1) + " invalid; default retained.");
+          }
+        }
+      } else if (overridePalette.layers !== undefined) {
+        if (Array.isArray(noticeList)) noticeList.push("Palette layers invalid; defaults retained.");
       }
       return base;
     }
@@ -544,6 +568,14 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
     } else {
       elStatus.textContent = "Palette missing; using safe fallback.";
       notices.push("Palette JSON unavailable; calm defaults engaged.");
+    const paletteData = await loadPalette("./data/palette.json", notices);
+    const active = mergePalette(defaults.palette, paletteData, notices);
+
+    if (paletteData) {
+      if (elStatus) elStatus.textContent = "Palette loaded.";
+    } else {
+      if (elStatus) elStatus.textContent = "Palette missing; using safe fallback.";
+      notices.push("Palette JSON not available; calm defaults engaged.");
     }
 
     async function main() {
@@ -653,6 +685,10 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
     }
     main();
     renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:active, NUM, notices });
+
+      // ND-safe rationale: no motion, high readability, soft colors, layered order
+      renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:active, NUM, notices });
+    }
   </script>
 </body>
 </html>

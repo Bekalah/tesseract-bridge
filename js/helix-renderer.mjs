@@ -193,6 +193,10 @@ function strokeLine(ctx, ax, ay, bx, by) {
 
 // --- Notices layer ----------------------------------------------------------
 function drawNotices(ctx, w, h, textColor, notices) {
+  /*
+    Inline fallback notice panel keeps the user informed when data files are missing.
+    Panel stays static and muted to honor the ND-safe brief.
+  */
   if (!Array.isArray(notices) || notices.length === 0) {
     return;
   }

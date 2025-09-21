@@ -33,6 +33,9 @@ ND safety and runs by simply opening `index.html`.
 - `index.html` - entry document that instantiates the 1440x900 canvas and loads the helix renderer module.
 - `js/helix-renderer.mjs` - ES module with pure drawing routines for each layer.
 - `data/palette.json` - optional palette override; missing file triggers a safe fallback notice.
+- `index.html` - entry document that sets up the canvas and palette loader, then calls the helix renderer.
+- `js/helix-renderer.mjs` - ES module with pure drawing routines for each layer.
+- `data/palette.json` - optional palette override; missing file triggers an inline fallback notice.
 - `README_RENDERER.md` - this usage guide.
 
 ## Usage
@@ -52,6 +55,7 @@ ND safety and runs by simply opening `index.html`.
    - Static double-helix lattice
 <<<<<<< main
 4. If `4. If `data/palette.json` is absent, the header reports the fallback and a calm on-canvas notice is drawn while defaults are used.
+4. If `data/palette.json` is absent or blocked, the header reports the fallback and a calm on-canvas notice is drawn while defaults are used.
 
 When launched via `file://`, browsers often block local fetches. To respect the "no network" covenant, the loader skips fetches
 in that context and renders with the defaults plus the on-canvas notice. To preview custom palettes, either adjust the defaults
@@ -227,5 +231,11 @@ When launched via `file://`, browsers often block local fetches; the renderer th
 - No animation or autoplay; the canvas paints once with layered geometry.
 - Calm contrast, layered order, and generous spacing preserve readability.
 - Layer hierarchy (Vesica → Tree → Fibonacci → Helix) keeps geometry multi-layered rather than flattened.
+Edit the file to customize colors. When launched via `file://`, browsers often block local fetches; the renderer therefore skips the request and displays the inline notice while using the defaults. To preview custom palettes, either adjust the defaults inside `index.html` or launch a temporary local server and open the same files there.
+
+## ND-safe choices
+- No animation or autoplay; only a single canvas render pass.
+- Calm contrast, layered order, and generous spacing for readability.
+- Layer hierarchy (Vesica -> Tree -> Fibonacci -> Helix) keeps geometry multi-layered rather than flattened.
 - Geometry counts align with numerology constants `3, 7, 9, 11, 22, 33, 99, 144` to honor the cosmology brief.
 - Notices appear inside muted panels to communicate fallbacks without flashing or startling color shifts.
