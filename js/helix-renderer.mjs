@@ -2,28 +2,37 @@
   helix-renderer.mjs
   ND-safe static renderer for layered sacred geometry.
 
-  Layers are rendered back-to-front without motion:
-    1) Vesica field - intersecting circle grid
+  Layers render back-to-front without motion:
+    1) Vesica field - intersecting circle lattice
     2) Tree-of-Life scaffold - ten sephirot nodes with twenty-two paths
     3) Fibonacci curve - static logarithmic spiral polyline
     4) Double-helix lattice - two phase-shifted strands with crossbars
 
   Numerology constants (3, 7, 9, 11, 22, 33, 99, 144) guide proportions.
-  Every routine is pure and receives the drawing context plus explicit data.
+  Every routine is pure: all state flows through parameters.
 */
 
+export const DEFAULT_PALETTE = Object.freeze({
+  bg:"#0b0b12",
+  ink:"#e8e8f0",
+  layers:Object.freeze(["#b1c7ff", "#89f7fe", "#a0ffa1", "#ffd27f", "#f5a3ff", "#d0d0e6"])
+});
+
 export function renderHelix(ctx, { width, height, palette, NUM, notices = [] }) {
+  const safePalette = mergePalette(palette);
+  const layerColors = safePalette.layers;
+
   // ND-safe background: calm tone, no flashing or gradients
   ctx.save();
-  ctx.fillStyle = palette.bg;
+  ctx.fillStyle = safePalette.bg;
   ctx.fillRect(0, 0, width, height);
 
   // Draw layered geometry back-to-front to preserve depth without animation
-  drawVesica(ctx, width, height, palette.layers[0], NUM);
-  drawTreeOfLife(ctx, width, height, palette.layers[1], palette.layers[2], NUM);
-  drawFibonacci(ctx, width, height, palette.layers[3], NUM);
-  drawHelix(ctx, width, height, palette.layers[4], palette.layers[5], NUM);
-  drawNotices(ctx, width, height, palette.ink, notices);
+  drawVesica(ctx, width, height, layerColors[0], NUM);
+  drawTreeOfLife(ctx, width, height, layerColors[1], layerColors[2], NUM);
+  drawFibonacci(ctx, width, height, layerColors[3], NUM);
+  drawHelix(ctx, width, height, layerColors[4], layerColors[5], NUM);
+  drawNotices(ctx, width, height, safePalette.ink, notices);
   ctx.restore();
 }
 
@@ -191,7 +200,7 @@ function strokeLine(ctx, ax, ay, bx, by) {
   ctx.stroke();
 }
 
-// --- Notices layer ----------------------------------------------------------
+// --- Notices layer ---------------------------------------------------------
 function drawNotices(ctx, w, h, textColor, notices) {
   /*
     Inline fallback notice panel keeps the user informed when data files are missing.
@@ -253,4 +262,31 @@ function wrapNoticeLines(text, maxLineWidth, ctx) {
   }
 
   return lines;
+}
+
+// --- Palette helpers -------------------------------------------------------
+function mergePalette(palette) {
+  const base = DEFAULT_PALETTE;
+  if (!palette || typeof palette !== "object") {
+    return base;
+  }
+  return {
+    bg: typeof palette.bg === "string" ? palette.bg : base.bg,
+    ink: typeof palette.ink === "string" ? palette.ink : base.ink,
+    layers: normalizeLayers(palette.layers)
+  };
+}
+
+function normalizeLayers(layers) {
+  const fallback = DEFAULT_PALETTE.layers;
+  const safe = [];
+  for (let i = 0; i < fallback.length; i += 1) {
+    const candidate = Array.isArray(layers) ? layers[i] : undefined;
+    if (typeof candidate === "string" && candidate.trim().length > 0) {
+      safe.push(candidate);
+    } else {
+      safe.push(fallback[i]);
+    }
+  }
+  return safe;
 }
