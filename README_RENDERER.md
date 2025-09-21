@@ -126,6 +126,9 @@ Static, offline HTML + Canvas composition that layers the vesica field, Tree-of-
 - `index.html` – entry document that sets up the canvas, loads the palette, and calls the renderer.
 - `js/helix-renderer.mjs` – ES module with pure drawing routines for each layer plus fallback notice rendering.
 - `data/palette.json` – optional palette override; missing file triggers a calm fallback notice and defaults.
+- `index.html` – entry document that sets up the canvas and palette fallback before invoking the helix renderer.
+- `js/helix-renderer.mjs` – ES module with pure drawing routines for each layer.
+- `data/palette.json` – optional palette override; missing file triggers a calm inline notice while defaults are used.
 - `README_RENDERER.md` – this usage guide.
 Static, offline HTML + Canvas composition layering four sacred geometry systems. The scene avoids motion and harsh contrast for
 ND safety and runs by simply opening `index.html`.
@@ -155,7 +158,6 @@ ND safety and runs by simply opening `index.html`.
    - Tree-of-Life nodes and paths
    - Fibonacci curve
    - Static double-helix lattice
-<<<<<<< main
 4. If `4. If `data/palette.json` is absent, the header reports the fallback and a calm on-canvas notice is drawn while defaults are used.
 4. If `data/palette.json` is absent or malformed, the header reports the fallback and a calm inline notice is drawn on-canvas while defaults are used.
 3. A single canvas renders, in order:
@@ -163,7 +165,9 @@ ND safety and runs by simply opening `index.html`.
    - Tree-of-Life nodes and paths
    - Fibonacci curve
    - Static double-helix lattice
+<<<<<<< main
 4. The header reports whether the optional palette loaded. Missing or unsupported JSON modules fall back to defaults, and the canvas prints a small notice box for clarity.
+4. If `data/palette.json` is absent, the header reports the fallback and a muted on-canvas notice appears while defaults remain active.
 
 When launched via `file://`, browsers often block local fetches. To respect the "no network" covenant, the loader skips fetches
 in that context and renders with the defaults plus the on-canvas notice. To preview custom palettes, either adjust the defaults
@@ -217,5 +221,11 @@ Edit the file to customize colors. Browsers that support JSON modules (modern Ch
 - No animation or autoplay; only a single render pass.
 - Calm contrast, layered order, and generous spacing for readability.
 - Layer hierarchy (Vesica -> Tree -> Fibonacci -> Helix) keeps geometry multi-layered rather than flattened.
+When launched via `file://`, browsers often block local fetches; the renderer therefore skips the palette request and uses the defaults automatically. To preview custom palettes without a server, tweak the defaults in `index.html` and re-open the file.
+
+## ND-safe choices
+- No animation or autoplay; the canvas paints once with layered geometry.
+- Calm contrast, layered order, and generous spacing preserve readability.
+- Layer hierarchy (Vesica → Tree → Fibonacci → Helix) keeps geometry multi-layered rather than flattened.
 - Geometry counts align with numerology constants `3, 7, 9, 11, 22, 33, 99, 144` to honor the cosmology brief.
 - Notices appear inside muted panels to communicate fallbacks without flashing or startling color shifts.

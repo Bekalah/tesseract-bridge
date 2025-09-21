@@ -149,6 +149,8 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
 
   <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
   <p class="note">This static renderer layers Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
+  <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
+  <p class="note">This static renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
 
   <script type="module">
     import { renderHelix } from "./js/helix-renderer.mjs";
@@ -179,6 +181,8 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
 
     async function loadJSON(path) {
       // ND-safe guard: avoid network requests when opened via file://
+    async function loadJSON(path) {
+      // Offline assurance: skip fetch entirely when opened via file:// to avoid blocked network calls.
       if (typeof window !== "undefined" && window.location && window.location.protocol === "file:") {
         return null;
       }
@@ -261,6 +265,13 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
       const base = { ...defaultPalette, layers: [...defaultPalette.layers] };
       if (!overridePalette || typeof overridePalette !== "object") {
         paletteNotices.push("Palette missing; defaults preserved.");
+    function sanitizePalette(defaultPalette, overridePalette, paletteNotices) {
+      // Pure function: clones defaults, applies overrides when valid, records calm notices otherwise.
+      const base = { ...defaultPalette, layers: [...defaultPalette.layers] };
+      if (!overridePalette || typeof overridePalette !== "object") {
+        if (overridePalette !== null && overridePalette !== undefined) {
+          paletteNotices.push("Palette object invalid; defaults retained.");
+        }
         return base;
       }
       if (typeof overridePalette.bg === "string") {
@@ -271,6 +282,8 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
         notices.push("Palette bg invalid; using default.");
       } else if (overridePalette.bg !== undefined) {
         paletteNotices.push("Palette bg invalid; using default.");
+      } else if (overridePalette.bg !== undefined) {
+        paletteNotices.push("Palette bg invalid; default shade kept.");
       }
       if (typeof overridePalette.ink === "string") {
         base.ink = overridePalette.ink;
@@ -280,6 +293,8 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
         notices.push("Palette ink invalid; using default.");
       } else if (overridePalette.ink !== undefined) {
         paletteNotices.push("Palette ink invalid; using default.");
+      } else if (overridePalette.ink !== undefined) {
+        paletteNotices.push("Palette ink invalid; default ink kept.");
       }
       if (Array.isArray(overridePalette.layers)) {
         for (let i = 0; i < base.layers.length; i += 1) {
@@ -295,6 +310,11 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
         notices.push("Palette layers invalid; using defaults.");
       } else if (overridePalette.layers !== undefined) {
         paletteNotices.push("Palette layers invalid; using defaults.");
+            paletteNotices.push("Palette layer " + (i + 1) + " invalid; default used.");
+          }
+        }
+      } else if (overridePalette.layers !== undefined) {
+        paletteNotices.push("Palette layers invalid; defaults used.");
       }
       return base;
     }
@@ -544,6 +564,21 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
       renderHelix(ctx, { width:canvas.width, height:canvas.height, palette, NUM, notices });
     } else {
       elStatus.textContent = "Palette fallback active.";
+    const palette = await loadJSON("./data/palette.json");
+    const paletteNotices = [];
+    const active = sanitizePalette(defaults.palette, palette, paletteNotices);
+
+    if (palette && paletteNotices.length === 0) {
+      elStatus.textContent = "Palette loaded.";
+    } else if (palette && paletteNotices.length > 0) {
+      elStatus.textContent = "Palette adjusted; see notice.";
+      notices.push(...paletteNotices);
+    } else {
+      elStatus.textContent = "Palette missing; using safe fallback.";
+      if (paletteNotices.length > 0) {
+        notices.push(...paletteNotices);
+      }
+      notices.push("Palette JSON not available; calm defaults engaged.");
     }
 
     main();
@@ -617,6 +652,7 @@ tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix 
       renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:active, NUM, notices });
     }
     main();
+    renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:active, NUM, notices });
   </script>
 </body>
 </html>
