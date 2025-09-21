@@ -73,7 +73,7 @@
 </head>
 <body>
   <header>
-    <h1>✦ Cathedral of Circuits ✦</h1>
+<<<<<    <h1>✦ Cathedral of Circuits ✦</h1>
     <p class="subtitle">ND-safe · Provenance required · Layered geometry · Offline-first bridge</p>
     <div class="status-bar" role="status" aria-live="polite">
       <span id="status">Loading palette…</span>
@@ -133,7 +133,14 @@
   </header>
 
   <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
-  <p class="note">This static renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
+>>>>>>>+main
+ng>Cosmi    <div><strong>Cosmic Helix Renderer</strong> — layered sacred geometry (offline, ND-safe)</div>
+    <div class="status" id="status">Loading palette…</div>
+  </header>
+
+  <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
+>>>>>>>+main/codex/orga
+tic renderer encodes Vesica, Tree-of-Life, Fibonacci, and a static double-helix lattice. No animation, no autoplay, no external libs. Open this file directly.</p>
 
   <script type="module">
     import { renderHelix } from "./js/helix-renderer.mjs";
@@ -155,7 +162,7 @@
     const ctx = canvas.getContext("2d");
     const notices = [];
 
-    async function loadJSON(path) {
+    async fun    async function loadJSON(path) {
       /*
         Offline covenant: skip fetch when opened via file:// so no network requests fire.
         When served over http(s) the fetch stays local and still honors the no-dependency rule.
@@ -200,6 +207,15 @@
         layers:["#b1c7ff","#89f7fe","#a0ffa1","#ffd27f","#f5a3ff","#d0d0e6"]
       }
     };
+>>>>>>>+main
+ = {
+      palette: {
+        bg:"#0b0b12",
+        ink:"#e8e8f0",
+        layers:["#b1c7ff","#89f7fe","#a0ffa1","#ffd27f","#f5a3ff","#d0d0e6"]
+      }
+    };
+>>>>>>> main/codex/organize-project-directory-structure
 
     const NUM = { THREE:3, SEVEN:7, NINE:9, ELEVEN:11, TWENTYTWO:22, THIRTYTHREE:33, NINETYNINE:99, ONEFORTYFOUR:144 };
 
@@ -232,6 +248,7 @@
       return base;
     }
 
+<<<<<<< main
     function formatTitle(repoId) {
       const override = REPO_OVERRIDES[repoId];
       if (override && override.title) {
@@ -350,6 +367,17 @@
         noticesList.push("Local file mode blocks palette fetch; calm defaults engaged.");
         return null;
       }
+    async function loadPaletteJSON(noticesList) {
+      /*
+        Offline assurance: honor the "no network" brief by avoiding fetch while
+        running as file://. When the palette cannot be reached the calm defaults
+        remain, and a notice will be rendered on-canvas.
+      */
+      const protocol = typeof window !== "undefined" && window.location ? window.location.protocol : null;
+      if (protocol === "file:") {
+        noticesList.push("Local file mode blocks palette fetch; calm defaults engaged.");
+        return null;
+      }
       try {
         const res = await fetch("./data/palette.json", { cache: "no-store" });
         if (!res.ok) {
@@ -455,6 +483,8 @@
       }
 
       renderHelix(ctx, { width:canvas.width, height:canvas.height, palette, NUM, notices });
+    } else {
+      elStatus.textContent = "Palette fallback active.";
     }
 
     main();
@@ -474,6 +504,8 @@
 
     // ND-safe rationale: no motion, high readability, soft colors, layered order
     if (ctx) {
+
+      // ND-safe rationale: no motion, high readability, soft colors, layered order
       renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:active, NUM, notices:[...notices, ...paletteNotices] });
     }
   </script>
