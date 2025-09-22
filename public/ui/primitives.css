@@ -1,0 +1,124 @@
+@import "./tokens.css";
+
+:root {
+  color-scheme:dark;
+}
+
+* {
+  box-sizing:border-box;
+}
+
+body {
+  margin:0;
+  min-height:100vh;
+  background:var(--tone-night);
+  color:var(--tone-ink);
+  font:var(--font-shell);
+  display:flex;
+  align-items:stretch;
+  justify-content:center;
+  padding:var(--space-ma-lg);
+}
+
+a {
+  color:inherit;
+  text-decoration:none;
+}
+
+a:hover,
+a:focus {
+  color:var(--tone-amber);
+}
+
+a,
+button {
+  min-height:44px; /* 44px targets for accessibility */
+}
+
+button {
+  background:transparent;
+  border:var(--border-thin);
+  border-radius:var(--radius-soft);
+  color:inherit;
+  padding:0 var(--space-ma-md);
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline:2px solid var(--tone-rose);
+  outline-offset:3px;
+}
+
+main.shell {
+  display:grid;
+  grid-template-columns:320px minmax(480px, 1fr);
+  gap:var(--space-ma-lg);
+  width:100%;
+  max-width:1080px;
+}
+
+.panel {
+  background:rgba(17,17,26,0.72);
+  border:var(--border-thin);
+  border-radius:var(--radius-soft);
+  padding:var(--space-ma-lg);
+  box-shadow:var(--shadow-ring);
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-ma-md);
+}
+
+.panel h1,
+.panel h2,
+.panel h3 {
+  margin:0;
+  font-weight:600;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+}
+
+.panel p {
+  margin:0;
+  color:var(--tone-mist);
+}
+
+.panel ul {
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-ma-sm);
+}
+
+.panel li {
+  display:flex;
+}
+
+.panel li a {
+  width:100%;
+  padding:var(--space-ma-sm) var(--space-ma-md);
+  border-radius:var(--radius-soft);
+  border:var(--border-thin);
+  background:rgba(11,11,18,0.68);
+}
+
+.panel li a:hover,
+.panel li a:focus-visible {
+  border:var(--border-strong);
+  background:rgba(212,175,55,0.18);
+}
+
+.gate {
+  margin-top:var(--space-ma-md);
+  padding:var(--space-ma-md);
+  font:var(--font-caption);
+  color:var(--tone-mist);
+  border-left:var(--border-strong);
+}
+
+@media (max-width:960px) {
+  main.shell {
+    grid-template-columns:1fr;
+  }
+}

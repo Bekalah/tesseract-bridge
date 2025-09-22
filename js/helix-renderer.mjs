@@ -11,6 +11,13 @@
   Numerology constants (3, 7, 9, 11, 22, 33, 99, 144) guide proportions.
   Every routine is pure: all state flows through parameters.
 */
+
+export const DEFAULT_PALETTE = Object.freeze({
+  bg:"#0b0b12",
+  ink:"#e8e8f0",
+  layers:Object.freeze(["#b1c7ff", "#89f7fe", "#a0ffa1", "#ffd27f", "#f5a3ff", "#d0d0e6"])
+});
+
 /**
  * Render a static, ND-safe layered sacred-geometry composition onto a canvas.
  *
@@ -30,78 +37,50 @@
  *   stacked informational panels; empty or non-array values are ignored.
  * @returns {void}
  */
-
-export const DEFAULT_PALETTE = Object.freeze({
-  bg:"#0b0b12",
-  ink:"#e8e8f0",
-  layers:Object.freeze(["#b1c7ff", "#89f7fe", "#a0ffa1", "#ffd27f", "#f5a3ff", "#d0d0e6"])
-});
-
 export function renderHelix(ctx, { width, height, palette, NUM, notices = [] }) {
-  const safePalette = mergePalette(palette);
-  const layerColors = safePalette.layers;
   const safePalette = normalizePalette(palette);
+  const layerColors = safePalette.layers;
 
-  // ND-safe background: calm tone, no flashing or gradients
   ctx.save();
   ctx.fillStyle = safePalette.bg;
   ctx.fillRect(0, 0, width, height);
 
-  // Draw layered geometry back-to-front to preserve depth without animation
+  // Draw layered geometry back-to-front to preserve depth without animation.
   drawVesica(ctx, width, height, layerColors[0], NUM);
   drawTreeOfLife(ctx, width, height, layerColors[1], layerColors[2], NUM);
   drawFibonacci(ctx, width, height, layerColors[3], NUM);
   drawHelix(ctx, width, height, layerColors[4], layerColors[5], NUM);
-  drawVesica(ctx, width, height, safePalette.layers[0], NUM);
-  drawTreeOfLife(ctx, width, height, safePalette.layers[1], safePalette.layers[2], NUM);
-  drawFibonacci(ctx, width, height, safePalette.layers[3], NUM);
-  drawHelix(ctx, width, height, safePalette.layers[4], safePalette.layers[5], NUM);
   drawNotices(ctx, width, height, safePalette.ink, notices);
+
   ctx.restore();
 }
 
 /**
- * Produce a normalized, ND-friendly palette ensuring a background color, ink color, and an array of six layer colors.
+ * Produce a normalized, ND-friendly palette ensuring a background color, ink color, and six layer colors.
  *
- * If `palette` is missing or partially defined, missing fields are filled from built-in calm defaults. Incoming `palette.layers`
- * values override defaults by index; any positions beyond the provided array are substituted with default layer colors so the
- * returned `layers` array always has six entries.
- *
- * @param {Object|null|undefined} palette - Optional palette partial. May contain `bg` (string), `ink` (string), and `layers` (string[]).
- * @return {{bg: string, ink: string, layers: string[]}} Normalized palette with `bg`, `ink`, and a six-element `layers` array.
+ * @param {Object|null|undefined} palette - Optional palette partial. May contain `bg`, `ink`, and `layers` entries.
+ * @return {{bg: string, ink: string, layers: string[]}} Normalized palette.
  */
 function normalizePalette(palette) {
   /*
-    Ensures every render uses calm, ND-safe colors even when the palette file is
-    missing or partially defined. Layers fall back in order without flashing.
+    Ensures every render uses calm, ND-safe colors even when the palette file is missing
+    or partially defined. Layers fall back in order without flashing.
   */
-  const defaults = {
-    bg: "#0b0b12",
-    ink: "#e8e8f0",
-    layers: ["#b1c7ff", "#89f7fe", "#a0ffa1", "#ffd27f", "#f5a3ff", "#d0d0e6"]
-  };
-  const source = palette ?? {};
+  const base = DEFAULT_PALETTE;
+  const source = typeof palette === "object" && palette !== null ? palette : {};
   const incomingLayers = Array.isArray(source.layers) ? source.layers : [];
-  const layers = defaults.layers.map((fallback, index) => incomingLayers[index] ?? fallback);
+  const layers = base.layers.map((fallback, index) => {
+    const candidate = incomingLayers[index];
+    return typeof candidate === "string" && candidate.trim().length > 0 ? candidate : fallback;
+  });
   return {
-    bg: source.bg ?? defaults.bg,
-    ink: source.ink ?? defaults.ink,
+    bg: typeof source.bg === "string" ? source.bg : base.bg,
+    ink: typeof source.ink === "string" ? source.ink : base.ink,
     layers
   };
 }
 
-/**
- * Render a vesica-style field of intersecting circles across the canvas.
- *
- * Draws a grid of NUM.NINE columns by NUM.SEVEN rows and places two horizontally
- * offset circles per grid cell to create vesica/intersection shapes. Strokes
- * the circles with the provided color and preserves the canvas state.
- *
- * @param {number} w - Canvas width in pixels.
- * @param {number} h - Canvas height in pixels.
- * @param {string} color - Stroke color used for the circle outlines.
- * @param {object} NUM - Numeric constants object; expects NUM.NINE (columns)
- *                      and NUM.SEVEN (rows) to determine the grid.
+// --- Layer 1: Vesica field --------------------------------------------------
 function drawVesica(ctx, w, h, color, NUM) {
   /*
     Intersecting circle grid referencing 9 columns and 7 rows.
@@ -164,7 +143,7 @@ function drawTreeOfLife(ctx, w, h, pathColor, nodeColor, NUM) {
     strokeLine(ctx, ax, ay, bx, by);
   });
 
-  // Sephirot rendered as filled circles; radius uses numerology constant 33
+  // Sephirot rendered as filled circles; radius uses numerology constant 33 for calm scale.
   ctx.fillStyle = nodeColor;
   const radius = Math.min(w, h) / NUM.THIRTYTHREE;
   nodes.forEach(([x, y]) => {
@@ -327,31 +306,4 @@ function wrapNoticeLines(text, maxLineWidth, ctx) {
   }
 
   return lines;
-}
-
-// --- Palette helpers -------------------------------------------------------
-function mergePalette(palette) {
-  const base = DEFAULT_PALETTE;
-  if (!palette || typeof palette !== "object") {
-    return base;
-  }
-  return {
-    bg: typeof palette.bg === "string" ? palette.bg : base.bg,
-    ink: typeof palette.ink === "string" ? palette.ink : base.ink,
-    layers: normalizeLayers(palette.layers)
-  };
-}
-
-function normalizeLayers(layers) {
-  const fallback = DEFAULT_PALETTE.layers;
-  const safe = [];
-  for (let i = 0; i < fallback.length; i += 1) {
-    const candidate = Array.isArray(layers) ? layers[i] : undefined;
-    if (typeof candidate === "string" && candidate.trim().length > 0) {
-      safe.push(candidate);
-    } else {
-      safe.push(fallback[i]);
-    }
-  }
-  return safe;
 }

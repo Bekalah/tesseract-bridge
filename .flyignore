@@ -1,0 +1,15 @@
+# Ignore local build artifacts and large sources when deploying to Fly.io
+node_modules
+.dist
+build
+coverage
+dist
+.tmp
+*.psd
+*.tif
+*.tiff
+*.psb
+*.ai
+*.mov
+*.mp4
+assets/raw

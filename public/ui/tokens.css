@@ -1,0 +1,26 @@
+/* UI tokens for Cathedral shell — ND-safe, high contrast, reduced motion */
+:root {
+  /* Tone tokens align with Kanso/Ma/Shibumi guidance */
+  --tone-night:#0b0b12;
+  --tone-ink:#e8e8f0;
+  --tone-mist:#a6a6c1;
+  --tone-amber:#d4af37;
+  --tone-rose:#f5a3ff;
+
+  /* Space tokens (Ma) with generous breathing room */
+  --space-ma-xs:8px;
+  --space-ma-sm:12px;
+  --space-ma-md:16px;
+  --space-ma-lg:24px;
+  --space-ma-xl:32px;
+
+  /* Typography tokens */
+  --font-shell:16px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-caption:13px/1.4 "Segoe UI",system-ui,-apple-system,sans-serif;
+
+  /* Borders and radii favor quiet outlines */
+  --border-thin:1px solid rgba(232,232,240,0.16);
+  --border-strong:1px solid rgba(232,232,240,0.32);
+  --radius-soft:9px;
+  --shadow-ring:0 0 0 1px rgba(232,232,240,0.16);
+}

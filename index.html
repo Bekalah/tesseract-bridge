@@ -7,20 +7,6 @@
   <meta name="color-scheme" content="light dark">
   <style>
     /* ND-safe styling: calm contrast, generous spacing, no motion */
-    :root { --bg:#0b0b12; --ink:#e8e8f0; --muted:#a6a6c1; }
-    html,body { margin:0; padding:0; background:var(--bg); color:var(--ink); font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
-    header { padding:12px 16px; border-bottom:1px solid #1d1d2a; }
-    header strong { letter-spacing:0.08em; text-transform:uppercase; }
-    .status { margin-top:6px; font-size:12px; color:var(--muted); }
-    main { max-width:1200px; margin:0 auto; padding:16px; display:flex; flex-direction:column; gap:20px; }
-    #stage { display:block; margin:0 auto; box-shadow:0 0 0 1px #1d1d2a; background:var(--bg); }
-    .note { max-width:900px; margin:0 auto 16px; color:var(--muted); font-size:13px; }
-    code { background:#11111a; padding:2px 4px; border-radius:3px; }
-  <title>Cosmic Helix Renderer (Offline, ND-safe)</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="color-scheme" content="light dark">
-  <style>
-    /* ND-safe: gentle contrast, no motion, generous breathing room */
     :root {
       --bg:#0b0b12;
       --ink:#e8e8f0;
@@ -42,6 +28,7 @@
     header strong {
       color:var(--accent);
       letter-spacing:0.06em;
+      text-transform:uppercase;
     }
     .status {
       margin-top:6px;
@@ -63,6 +50,7 @@
       height:auto;
       border:1px solid var(--border);
       box-shadow:0 0 0 1px #11111a;
+      background:var(--bg);
     }
     .note {
       color:var(--muted);
@@ -72,7 +60,7 @@
       color:var(--accent);
     }
     footer {
-      margin-top:16px;
+      margin-top:4px;
       padding-top:12px;
       border-top:1px solid var(--border);
       color:var(--muted);
@@ -89,19 +77,25 @@
 </head>
 <body>
   <header>
-    <div><strong>Cosmic Helix Renderer</strong> - layered sacred geometry (offline, ND-safe)</div>
-    <div class="status" id="status" role="status" aria-live="polite">Preparing palette...</div>
-    <div><strong>Cosmic Helix Renderer</strong> - layered sacred geometry (offline)</div>
-    <div class="status" id="status" role="status" aria-live="polite">Loading palette...</div>
+    <div><strong>Cosmic Helix Renderer</strong> — layered sacred geometry (offline, ND-safe)</div>
+    <div class="status" id="status" role="status" aria-live="polite">Preparing palette…</div>
   </header>
 
   <main>
     <canvas id="stage" width="1440" height="900" aria-label="Layered sacred geometry canvas"></canvas>
-    <p class="note">This static renderer layers a Vesica field, Tree-of-Life scaffold, Fibonacci curve, and static double-helix lattice. No animation, no autoplay, no remote dependencies. Open this file directly for an offline render.</p>
+    <p class="note">
+      The canvas renders four static layers: <strong>Vesica field</strong>, <strong>Tree-of-Life nodes and paths</strong>,
+      <strong>Fibonacci curve</strong>, and a <strong>static double-helix lattice</strong>. No animation, no autoplay, and
+      no external dependencies. Open this file directly for an offline, ND-safe scene.
+    </p>
+    <footer>
+      Numerology anchors: <code>3</code>, <code>7</code>, <code>9</code>, <code>11</code>, <code>22</code>, <code>33</code>, <code>99</code>, <code>144</code>.
+      Geometry stays multi-layered and calm to honor the Cathedral brief.
+    </footer>
   </main>
 
   <script type="module">
-    import { renderHelix, DEFAULT_PALETTE } from "./js/helix-renderer.mjs";
+    import { renderHelix } from "./js/helix-renderer.mjs";
 
     const statusEl = document.getElementById("status");
     const canvas = document.getElementById("stage");
@@ -110,7 +104,17 @@
     if (!ctx) {
       statusEl.textContent = "Canvas not supported; geometry unavailable.";
     } else {
-      const NUM = Object.freeze({ THREE:3, SEVEN:7, NINE:9, ELEVEN:11, TWENTYTWO:22, THIRTYTHREE:33, NINETYNINE:99, ONEFORTYFOUR:144 });
+      // Numerology constants guide proportions without introducing motion.
+      const NUM = Object.freeze({
+        THREE:3,
+        SEVEN:7,
+        NINE:9,
+        ELEVEN:11,
+        TWENTYTWO:22,
+        THIRTYTHREE:33,
+        NINETYNINE:99,
+        ONEFORTYFOUR:144
+      });
       const notices = [];
 
       const { palette, status, notice } = await loadPalette("./data/palette.json");
@@ -119,118 +123,49 @@
         notices.push(notice);
       }
 
-      const activePalette = palette ?? DEFAULT_PALETTE;
-      renderHelix(ctx, { width:canvas.width, height:canvas.height, palette:activePalette, NUM, notices });
+      // ND-safe rationale: render once with calm defaults if palette is missing.
+      renderHelix(ctx, {
+        width: canvas.width,
+        height: canvas.height,
+        palette: palette ?? undefined,
+        NUM,
+        notices
+      });
     }
 
     /*
-      loadPalette attempts to read ./data/palette.json without leaving offline scope.
-      ND-safe rationale: failing to reach the file should never flash; we return calm status text
-      and ask the renderer to paint a muted inline notice instead.
+      Offline-first loader: attempts to read ./data/palette.json but falls back quietly
+      when browsers block file:// fetches. This keeps the scene self-contained and calm.
     */
     async function loadPalette(path) {
       const isFileProtocol = typeof window !== "undefined" && window.location && window.location.protocol === "file:";
       const fallback = {
-        palette:null,
-        status: isFileProtocol ? "Palette blocked under file://; using fallback colors." : "Palette missing; using fallback colors.",
-        notice: isFileProtocol ? "Palette JSON blocked by file:// security; ND-safe defaults applied." : "Palette JSON unavailable; ND-safe defaults applied."
+        palette: null,
+        status: isFileProtocol ? "Palette blocked under file://; using defaults." : "Palette missing; using defaults.",
+        notice: isFileProtocol
+          ? "Palette JSON blocked by file:// security; ND-safe defaults applied."
+          : "Palette JSON unavailable; ND-safe defaults applied."
       };
 
-      // When fetch is unavailable (very old browsers), fall back immediately.
       if (typeof fetch !== "function") {
         return fallback;
       }
 
       try {
-        // file:// fetches often fail silently; this still respects the offline covenant because
-        // the request never leaves the local machine.
-        const res = await fetch(path, { cache:"no-store" });
-        if (!res.ok) {
+        const response = await fetch(path, { cache: "no-store" });
+        if (!response.ok) {
           return fallback;
         }
-        const data = await res.json();
+        const data = await response.json();
         return {
-          palette:data,
-          status:"Palette loaded.",
-          notice:null
+          palette: data,
+          status: "Palette loaded.",
+          notice: null
         };
-      } catch (err) {
-        // Common when opened via file:// due to browser security; we fall back calmly.
+      } catch (error) {
         return fallback;
       }
     }
-    <p class="note">
-      The canvas renders four static layers: <strong>Vesica field</strong>, <strong>Tree-of-Life nodes and paths</strong>,
-      <strong>Fibonacci curve</strong>, and a <strong>static double-helix lattice</strong>. No animation, no autoplay, and
-      no external dependencies. Open this file directly for an offline, ND-safe scene.
-    </p>
-    <footer>
-      Numerology anchors: 3, 7, 9, 11, 22, 33, 99, 144. Geometry stays multi-layered and calm to honor the Cathedral brief.
-    </footer>
-  </main>
-
-  <script type="module">
-    import { renderHelix } from "./js/helix-renderer.mjs";
-
-    const status = document.getElementById("status");
-    const canvas = document.getElementById("stage");
-    const ctx = canvas.getContext("2d");
-
-    async function loadPalette(path) {
-      /*
-        Offline-first loader: skips fetch when opened via file:// to avoid noisy console errors.
-        Returns null on failure so the renderer can fall back to calm defaults.
-      */
-      if (window.location.protocol === "file:") {
-        return null;
-      }
-      try {
-        const response = await fetch(path, { cache: "no-store" });
-        if (!response.ok) {
-          throw new Error(String(response.status));
-        }
-        return await response.json();
-      } catch (error) {
-        console.warn(`Palette load failed: ${error.message}`);
-        return null;
-      }
-    }
-
-    const defaults = {
-      palette: {
-        bg:"#0b0b12",
-        ink:"#e8e8f0",
-        layers:["#b1c7ff","#89f7fe","#a0ffa1","#ffd27f","#f5a3ff","#d0d0e6"]
-      }
-    };
-
-    const notices = [];
-    const palette = await loadPalette("./data/palette.json");
-    if (palette) {
-      status.textContent = "Palette loaded.";
-    } else {
-      status.textContent = "Palette missing; using calm fallback.";
-      notices.push("Palette file offline - defaults applied for ND-safe contrast.");
-    }
-
-    const NUM = {
-      THREE:3,
-      SEVEN:7,
-      NINE:9,
-      ELEVEN:11,
-      TWENTYTWO:22,
-      THIRTYTHREE:33,
-      NINETYNINE:99,
-      ONEFORTYFOUR:144
-    };
-
-    renderHelix(ctx, {
-      width:canvas.width,
-      height:canvas.height,
-      palette:palette || defaults.palette,
-      NUM,
-      notices
-    });
   </script>
 </body>
 </html>
