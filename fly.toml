@@ -1,18 +1,14 @@
-# Minimal Fly.io config for the static Cosmic Helix renderer.
-# Update the app name locally before first deploy.
 app = "tesseract-bridge"
 
 [build]
-  image = "flyio/static"
+  dockerfile = "Dockerfile"
 
-[[services]]
-  internal_port = 8080
-  protocol = "tcp"
+[env]
+  NODE_ENV = "production"
 
-  [[services.ports]]
-    handlers = ["http"]
-    port = 80
-
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = 443
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
