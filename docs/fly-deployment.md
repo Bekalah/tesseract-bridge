@@ -1,7 +1,7 @@
 # Fly.io Deployment Notes (Manual, Offline-First Prep)
 
 Keep deployments intentional and human-driven. These steps assume you already
-inspected the renderer locally by double-clicking `index.html`.
+tested the API locally with `npm start`.
 
 ## 1. Install tooling locally
 - Install [flyctl](https://fly.io/docs/hands-on/install-flyctl/) on your own
@@ -12,15 +12,16 @@ deploy.
 ## 2. First-time setup
 - From the project root run `flyctl launch --no-deploy` and answer the prompts.
   - Use an app name that reflects your environment (e.g., `tesseract-bridge`).
-  - Select the `fly.toml` in this repo when asked; it already references the
-    static layout.
-  - Decline volume creation and builders; this site stays static.
+  - Select the `fly.toml` in this repo when asked; it builds the Node API
+    Docker image.
+  - Decline volume creation and builders; the service is stateless JSON.
 - Commit the generated secrets locally if any were created, but do not push
   them to version control.
 
 ## 3. Deployment
-- Ensure the local files match the desired release. Re-run the renderer locally
-  to confirm palettes and geometry look correct.
+- Ensure the local files match the desired release. Re-run `npm start` in one
+  terminal and use `curl` or your preferred HTTP client to confirm `/registry`
+  and `/sync` respond as expected.
 - Deploy with `flyctl deploy --config fly.toml`.
 - After deployment finishes, use `flyctl status` to confirm the static machine is
   healthy.
@@ -31,7 +32,7 @@ deploy.
   release history so you can target earlier versions.
 
 ## ND-safe reminders
-- Keep assets calm and layered; no animation or auto-playing media.
-- Never enable CDN transformations that could flatten or recolor the geometry.
-- Maintain parity between the offline canvas and the hosted version so sensory
-  expectations remain stable.
+- Keep data calm and layered; no surprise schema changes without updating the
+  registry manifest and docs.
+- Maintain parity between local file data and the hosted API responses so
+  sensory expectations remain stable.

@@ -4,7 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "prebuild": "node scripts/verify-absent.mjs",
-    "build": "vite build"
+    "start": "node server.mjs",
+    "dev": "node server.mjs"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
   }
 }
