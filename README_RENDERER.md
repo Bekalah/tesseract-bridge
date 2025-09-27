@@ -44,3 +44,12 @@ external dependencies.
 - Calm contrast, layered order, and generous spacing for readability.
 - Geometry counts align with numerology constants `3, 7, 9, 11, 22, 33, 99, 144`
   to honor the cosmology brief.
+
+## Canon integration (why these layers)
+- **Soul — circuitum99:** Vesica field keeps light wells intersecting without
+  collapse.
+- **Mind — cosmogenesis-learning-engine:** Tree-of-Life lattice carries study
+  pathways.
+- **Body — stone-cathedral:** Fibonacci spiral threads embodied expansion.
+- **Tarot — liber-arcanae:** Double helix preserves divination memory in static
+  braids.

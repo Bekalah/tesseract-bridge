@@ -8,6 +8,12 @@
     3) Fibonacci curve - static logarithmic spiral polyline
     4) Double-helix lattice - two phase-shifted strands with crossbars
 
+  Canon alignment (why the order matters):
+    - Soul / circuitum99: Vesica field establishes the luminous soul grid.
+    - Mind / cosmogenesis-learning-engine: Tree-of-Life articulates study paths.
+    - Body / stone-cathedral: Fibonacci curve threads embodied growth.
+    - Tarot / liber-arcanae: Double helix anchors divination memory lattice.
+
   Numerology constants (3, 7, 9, 11, 22, 33, 99, 144) guide proportions.
   Every routine is pure: all state flows through parameters.
 */
@@ -85,6 +91,7 @@ function drawVesica(ctx, w, h, color, NUM) {
   /*
     Intersecting circle grid referencing 9 columns and 7 rows.
     Total circles (9 * 7 * 2 = 126) stay below the 144 threshold for sensory ease.
+    Canon link: Soul / circuitum99 is rendered as overlapping light wells.
   */
   const cols = NUM.NINE;
   const rows = NUM.SEVEN;
@@ -113,6 +120,7 @@ function drawTreeOfLife(ctx, w, h, pathColor, nodeColor, NUM) {
   /*
     Ten sephirot nodes (Tree of Life) and twenty-two connecting paths.
     Positions are normalized to keep structure centered and balanced.
+    Canon link: Mind / cosmogenesis-learning-engine forms the studious lattice.
   */
   const nodesNorm = [
     [0.50, 0.08], // Keter
@@ -158,6 +166,7 @@ function drawFibonacci(ctx, w, h, color, NUM) {
   /*
     Static logarithmic spiral approximated with NUM.NINETYNINE segments.
     Center offset toward the lower left to weave between Vesica and Helix layers.
+    Canon link: Body / stone-cathedral anchors the growth spiral.
   */
   const phi = (1 + Math.sqrt(5)) / 2;
   const quarterTurns = NUM.THREE; // three quarter-turns for gentle sweep
@@ -190,6 +199,7 @@ function drawHelix(ctx, w, h, colorA, colorB, NUM) {
   /*
     Two static sine-based strands with TWENTYTWO crossbars to echo the paths.
     Amplitude kept small for visual calm while preserving layered depth.
+    Canon link: Tarot / liber-arcanae holds the helix archive without motion.
   */
   const segments = NUM.ONEFORTYFOUR;
   const amplitude = h / NUM.NINE;
