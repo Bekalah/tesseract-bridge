@@ -5,3 +5,11 @@ __pycache__/
 img/black-madonna.png
 # Guarded PNG masters (kept offline per anti-resurrection brief)
 assets/art/black-madonna-altar-1600.png
+
+# Security
+.env.local
+.env.production
+*.pem
+*.key
+secrets/
+*.secret

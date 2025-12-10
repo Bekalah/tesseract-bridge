@@ -9,5 +9,21 @@
   },
   "dependencies": {
     "express": "^4.19.2"
+  },
+  "alchemical": {
+    "name": "Tesseract",
+    "symbol": "⊞",
+    "label": "⊞ Tesseract (tesseract-bridge)",
+    "magnumOpus": true,
+    "hermetic": true,
+    "enochian": true,
+    "goldStandard": true
+  },
+  "cathedral": {
+    "quality": "Gold Standard A+",
+    "theme": "magnum-opus-master",
+    "palette": "hermetic-enochian-alchemical",
+    "accuracy": "artistic-scientific-creative-research-based",
+    "control": "turbo-openspec"
   }
 }
